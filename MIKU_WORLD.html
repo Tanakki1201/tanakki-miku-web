@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MIKU WORLD — A world connected by music. An unofficial fan-made Hatsune Miku community concept.">
+<title>MIKU WORLD — Unofficial Fan Site</title>
+<style>
+:root{
+  --cyan:#00ffff;
+  --white:#fff;
+  --bg:#000;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,"Yu Gothic","Meiryo",sans-serif;
+}
+body{overflow-x:hidden}
+button{font:inherit}
+.hero{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  min-height:620px;
+  overflow:hidden;
+  background:#000;
+}
+/* ===== MIKU WORLD layered hero =====
+   Static composition: size/placement only. Animation is intentionally deferred.
+*/
+.world-layers{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  z-index:1;
+  background:#000;
+}
+.world-layers img{
+  position:absolute;
+  display:block;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.world-universe{
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  z-index:1;
+}
+.world-earth{
+  left:8vw;
+  top:-2vh;
+  width:64vw;
+  height:106vh;
+  object-fit:contain;
+  object-position:center;
+  z-index:2;
+}
+.world-miku{
+  right:-5vw;
+  bottom:-8vh;
+  width:63vw;
+  height:108vh;
+  object-fit:contain;
+  object-position:center bottom;
+  z-index:3;
+}
+.hero-image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+.hero-shade{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(0,0,0,0) 34%, rgba(0,0,0,.10) 68%, rgba(0,0,0,.24) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.28) 0%, rgba(0,0,0,.06) 34%, rgba(0,0,0,0) 58%);
+}
+.header{
+  position:absolute;
+  inset:0 0 auto 0;
+  z-index:10;
+  height:100px;
+}
+.menu{
+  position:absolute;
+  top:25px;
+  left:28px;
+  width:40px;
+  height:32px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  padding:0;
+}
+.menu span{
+  display:block;
+  width:38px;
+  height:3px;
+  margin-bottom:8px;
+  background:#fff;
+  border-radius:99px;
+}
+.brand{
+  position:absolute;
+  top:25px;
+  left:91px;
+}
+.brand-main{
+  margin:0;
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:5px;
+}
+.brand-sub{
+  margin:4px 0 0;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:4px;
+}
+.languages{
+  position:absolute;
+  top:25px;
+  right:30px;
+  display:flex;
+  gap:25px;
+}
+.lang{
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-size:13px;
+  letter-spacing:2px;
+  cursor:pointer;
+  padding:3px 0 10px;
+}
+.lang.active{color:var(--cyan)}
+.lang{
+  position:relative;
+}
+
+.lang.active::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-2px;
+  transform:translateX(-50%);
+  width:22px;
+  height:2px;
+  margin:0;
+  background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan);
+}
+.copy{
+  position:absolute;
+  z-index:6;
+  left:3.3%;
+  top:27%;
+  width:410px;
+}
+h1{
+  margin:0;
+  color:#fff;
+  font-size:clamp(54px,7vw,110px);
+  line-height:.88;
+  letter-spacing:9px;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 10px rgba(0,255,255,.80),
+    0 0 30px rgba(0,255,255,.45),
+    2px 3px 8px rgba(0,0,0,.78);
+}
+h1 span{display:block}
+.subtitle{
+  margin:22px 0 0;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:4px;
+  text-shadow:0 2px 7px rgba(0,0,0,.95),0 0 8px rgba(0,255,255,.18);
+}
+.ja-copy{
+  margin:27px 0 0;
+  font-size:17px;
+  line-height:1.8;
+  text-shadow:0 2px 8px rgba(0,0,0,.98),0 0 10px rgba(0,0,0,.55);
+}
+.rule{
+  width:55px;
+  height:1px;
+  margin:18px 0 0;
+  background:#fff;
+}
+.keywords{
+  margin:16px 0 0;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:3px;
+  line-height:1.8;
+  text-shadow:0 2px 8px rgba(0,0,0,.98),0 0 9px rgba(0,0,0,.50);
+}
+.join-area{
+  position:absolute;
+  z-index:8;
+  left:50%;
+  bottom:17%;
+  width:390px;
+  transform:translateX(-50%);
+}
+.join{
+  width:100%;
+  height:62px;
+  border:1px solid rgba(0,255,255,.9);
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(2,12,22,.72), rgba(0,8,16,.54));
+  color:#fff;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:2px;
+  cursor:pointer;
+  box-shadow:
+    0 0 10px rgba(0,255,255,.36),
+    0 0 28px rgba(0,255,255,.12),
+    inset 0 0 24px rgba(0,255,255,.08),
+    inset 0 1px 0 rgba(255,255,255,.18);
+}
+.join:hover{
+  background:linear-gradient(180deg, rgba(2,18,30,.84), rgba(0,10,20,.68));
+  box-shadow:
+    0 0 18px rgba(0,255,255,.58),
+    0 0 42px rgba(0,255,255,.18),
+    inset 0 0 28px rgba(0,255,255,.11),
+    inset 0 1px 0 rgba(255,255,255,.24);
+}
+/* A small, unobtrusive rights notice keeps the landing page clear while
+   making the unofficial/fan-made status and PCL credit visible. */
+.legal-footer{
+  position:absolute;
+  z-index:12;
+  left:50%;
+  bottom:12px;
+  transform:translateX(-50%);
+  width:min(94%,980px);
+  text-align:center;
+  font-size:9px;
+  line-height:1.55;
+  letter-spacing:.35px;
+  color:rgba(255,255,255,.62);
+  text-shadow:0 1px 5px rgba(0,0,0,.98);
+}
+.legal-footer a{
+  color:rgba(255,255,255,.78);
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.legal-footer a:hover{color:var(--cyan)}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(0,0,0,.76);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.25s ease;
+}
+.modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+.card{
+  width:min(560px,100%);
+  max-height:88vh;
+  overflow:auto;
+  padding:38px;
+  border:1px solid rgba(0,255,255,.3);
+  border-radius:18px;
+  background:rgba(2,7,16,.98);
+  box-shadow:0 0 50px rgba(0,0,0,.7);
+}
+.close{
+  float:right;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-size:28px;
+  cursor:pointer;
+}
+.kicker{
+  color:var(--cyan);
+  font-size:10px;
+  letter-spacing:4px;
+}
+.card h2{
+  margin:8px 0 16px;
+  font-size:50px;
+  letter-spacing:5px;
+}
+.card p{
+  line-height:1.8;
+  color:rgba(255,255,255,.75);
+}
+.legal-note{
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.12);
+  font-size:12px;
+  color:rgba(255,255,255,.65);
+}
+.legal-note a{color:var(--cyan)}
+
+/* Cinematic pop-in sequence: the JOIN button appears last. */
+.pop-item{
+  opacity:0;
+  transform:translateY(24px) scale(.94);
+  filter:blur(8px);
+  animation:mikuPopIn .85s cubic-bezier(.16,1,.3,1) forwards;
+  will-change:transform,opacity,filter;
+}
+.pop-title{animation-delay:.35s}
+.pop-subtitle{animation-delay:1.05s}
+.pop-message{animation-delay:1.55s}
+.pop-keywords{animation-delay:2.55s}
+.pop-join{animation-delay:3.55s}
+@keyframes mikuPopIn{
+  0%{opacity:0;transform:translateY(24px) scale(.94);filter:blur(8px)}
+  55%{opacity:1;transform:translateY(-3px) scale(1.015);filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .pop-item{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}
+}
+.join.pop-join{
+  animation-name:mikuPopIn,mikuJoinGlow;
+  animation-duration:.85s,2.2s;
+  animation-timing-function:cubic-bezier(.16,1,.3,1),ease-in-out;
+  animation-delay:3.55s,4.45s;
+  animation-iteration-count:1,infinite;
+  animation-direction:normal,alternate;
+}
+@keyframes mikuJoinGlow{
+  from{box-shadow:0 0 10px rgba(0,255,255,.36),0 0 28px rgba(0,255,255,.12),inset 0 0 24px rgba(0,255,255,.08),inset 0 1px 0 rgba(255,255,255,.18)}
+  to{box-shadow:0 0 20px rgba(0,255,255,.62),0 0 44px rgba(0,255,255,.22),inset 0 0 30px rgba(0,255,255,.12),inset 0 1px 0 rgba(255,255,255,.25)}
+}
+@media(max-width:760px){
+  .brand{left:72px}
+  .brand-main{font-size:15px;letter-spacing:3px}
+  .brand-sub{font-size:8px;letter-spacing:2px}
+  .languages{right:12px;gap:10px}
+  .lang{font-size:10px;letter-spacing:1px}
+  .copy{left:6%;top:30%;width:72%}
+  h1{font-size:clamp(46px,14vw,76px);letter-spacing:5px}
+  .subtitle{font-size:9px;letter-spacing:2px}
+  .ja-copy{font-size:14px}
+  .join-area{left:50%;bottom:10%;width:min(90%,390px);transform:translateX(-50%)}
+  .legal-footer{bottom:6px;font-size:8px;width:94%}
+  .card{padding:28px 22px}
+  .card h2{font-size:38px}
+}
+</style>
+<style>
+/* Footer disclaimer: improved readability */
+.footer-disclaimer {
+  position: relative !important;
+  z-index: 20 !important;
+  width: min(1100px, 92vw) !important;
+  margin: 0 auto !important;
+  padding: 14px 18px 18px !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  color: rgba(255,255,255,.92) !important;
+  background: #000000 !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,.95) !important;
+}
+
+.footer-disclaimer a {
+  color: #dffcff !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
+
+@media (max-width: 700px) {
+  .footer-disclaimer {
+    width: 94vw !important;
+    padding: 12px 12px 14px !important;
+    font-size: 11px !important;
+    line-height: 1.7 !important;
+  }
+}
+</style>
+
+<style>
+.disclaimer-jp {
+  margin: 6px 0 0 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  font-weight: 600 !important;
+}
+@media (max-width: 700px) {
+  .disclaimer-jp {
+    font-size: 11px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ZHの中国語表示もJPと同じサンセリフ系の見た目に統一 */
+html[lang="zh"] body,
+html[lang="zh"] .hero,
+html[lang="zh"] .copy,
+html[lang="zh"] .copy *,
+html[lang="zh"] .disclaimer-jp,
+html[lang="zh"] .footer-disclaimer {
+  font-family: Arial, "Noto Sans CJK SC", "Microsoft YaHei", "Noto Sans", sans-serif !important;
+  font-style: normal !important;
+}
+
+/* 中国語だけ太さが変わりすぎないように調整 */
+html[lang="zh"] .copy-message,
+html[lang="zh"] .disclaimer-jp {
+  font-weight: 500 !important;
+}
+</style>
+
+
+<style>
+/* 初音ミク非公式ファンサイト注意書き：黒文字＋読みやすい背景 */
+.legal-footer .disclaimer-jp {
+  display: inline-block !important;
+  color: #000000 !important;
+  background: rgba(255,255,255,0.88) !important;
+  padding: 4px 12px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  line-height: 1.7 !important;
+}
+
+/* 言語切替後も同じ黒文字スタイルを維持 */
+html[lang="en"] .legal-footer .disclaimer-jp,
+html[lang="id"] .legal-footer .disclaimer-jp,
+html[lang="zh"] .legal-footer .disclaimer-jp,
+html[lang="es"] .legal-footer .disclaimer-jp {
+  color: #000000 !important;
+  background: rgba(255,255,255,0.88) !important;
+  text-shadow: none !important;
+}
+
+@media (max-width: 700px) {
+  .legal-footer .disclaimer-jp {
+    max-width: 92vw !important;
+    box-sizing: border-box !important;
+    font-size: 11px !important;
+  }
+}
+</style>
+
+
+<style>
+.brand-main {
+  font-size: 17px !important;
+  letter-spacing: 3px !important;
+  white-space: nowrap !important;
+}
+@media (max-width:760px) {
+  .brand-main {
+    font-size: 12px !important;
+    letter-spacing: 2px !important;
+  }
+}
+</style>
+
+
+
+
+
+<style>
+.hero-image{ -webkit-user-drag:none; user-drag:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+</style>
+
+
+<style>
+/* Fixed top navigation: stays visible while the page scrolls */
+.header{
+  position:fixed !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  z-index:9999 !important;
+  height:100px;
+}
+</style>
+
+
+<style>
+/* MIKU WORLD glass-style fixed header */
+.header{
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.92) 0%,
+    rgba(255,255,255,.84) 72%,
+    rgba(230,252,255,.82) 100%
+  ) !important;
+  -webkit-backdrop-filter:blur(12px) saturate(130%);
+  backdrop-filter:blur(12px) saturate(130%);
+  box-shadow:
+    0 6px 24px rgba(0,0,0,.12),
+    0 1px 0 rgba(0,220,255,.72) !important;
+}
+.header::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:2px;
+  background:rgba(0,220,255,.75);
+  box-shadow:0 0 9px rgba(0,220,255,.45);
+  pointer-events:none;
+}
+.header .brand-main,
+.header .brand-sub{
+  color:#050505 !important;
+  text-shadow:none !important;
+}
+.header .menu span{
+  background:#050505 !important;
+}
+.header .lang{
+  color:#050505 !important;
+}
+.header .lang.active{
+  color:#00aeca !important;
+}
+</style>
+
+
+<style>
+/* Keep the header controls in the same positions, but make only the glass layer shorter. */
+.header{
+  background:transparent !important;
+}
+.header::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:72px;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.92) 0%,
+    rgba(255,255,255,.84) 72%,
+    rgba(230,252,255,.82) 100%
+  );
+  -webkit-backdrop-filter:blur(12px) saturate(130%);
+  backdrop-filter:blur(12px) saturate(130%);
+  box-shadow:0 6px 24px rgba(0,0,0,.12);
+  pointer-events:none;
+}
+.header::after{
+  bottom:auto !important;
+  top:71px !important;
+  height:2px !important;
+  background:rgba(0,220,255,.75) !important;
+  box-shadow:0 0 9px rgba(0,220,255,.45) !important;
+}
+.header > *{
+  position:relative;
+  z-index:2;
+}
+</style>
+
+
+<style>
+/* Final header tuning: compact translucent layer, with all controls safely inside it */
+.header{
+  height:72px !important;
+  background:transparent !important;
+}
+
+.header::before{
+  height:72px !important;
+  background:rgba(255,255,255,.76) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(125%);
+  backdrop-filter:blur(14px) saturate(125%);
+  box-shadow:0 4px 18px rgba(0,0,0,.12);
+}
+
+.header::after{
+  top:71px !important;
+  height:2px !important;
+  background:rgba(0,220,255,.78) !important;
+  box-shadow:0 0 9px rgba(0,220,255,.42) !important;
+}
+
+/* Keep the menu, site name and language switch fully inside the glass */
+.header .menu{
+  top:20px !important;
+}
+.header .brand{
+  top:11px !important;
+}
+.header .languages{
+  top:25px !important;
+}
+.header .brand-main{
+  line-height:1.25 !important;
+}
+.header .brand-sub{
+  margin-top:3px !important;
+  line-height:1.1 !important;
+}
+</style>
+
+
+<style>
+/* Final header layout: site title stays to the right of the hamburger,
+   with the English label directly underneath. JP / EN stays on the right. */
+.header{
+  height:72px !important;
+}
+.header .menu{
+  top:20px !important;
+  left:28px !important;
+}
+.header .brand{
+  top:11px !important;
+  left:91px !important;
+  width:auto !important;
+  text-align:left !important;
+}
+.header .brand-main{
+  font-size:17px !important;
+  letter-spacing:3px !important;
+  line-height:1.25 !important;
+  white-space:nowrap !important;
+}
+.header .brand-sub{
+  margin-top:3px !important;
+  font-size:10px !important;
+  letter-spacing:4px !important;
+  line-height:1.1 !important;
+  white-space:nowrap !important;
+}
+.header .languages{
+  top:25px !important;
+  right:30px !important;
+}
+</style>
+
+
+<style>
+/* Refined compact glass header */
+.header{
+  height:68px !important;
+  background:transparent !important;
+}
+
+.header::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:68px;
+  background:rgba(255,255,255,.68);
+  -webkit-backdrop-filter:blur(14px) saturate(125%);
+  backdrop-filter:blur(14px) saturate(125%);
+  box-shadow:0 4px 18px rgba(0,0,0,.10);
+  pointer-events:none;
+}
+
+.header::after{
+  top:67px !important;
+  bottom:auto !important;
+  height:1px !important;
+  background:rgba(0,220,255,.82) !important;
+  box-shadow:0 0 8px rgba(0,220,255,.38) !important;
+}
+
+.header > *{
+  position:relative;
+  z-index:2;
+}
+
+/* Hamburger */
+.header .menu{
+  top:18px !important;
+  left:28px !important;
+}
+
+/* Brand: directly to the right of the hamburger */
+.header .brand{
+  top:11px !important;
+  left:90px !important;
+  text-align:left !important;
+}
+
+.header .brand-main{
+  font-size:17px !important;
+  letter-spacing:3px !important;
+  line-height:1.15 !important;
+  white-space:nowrap !important;
+}
+
+.header .brand-sub{
+  margin-top:4px !important;
+  font-size:9px !important;
+  letter-spacing:4px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+
+/* JP / EN: vertically centered in the same header */
+.header .languages{
+  top:25px !important;
+  right:30px !important;
+}
+
+.header .lang{
+  padding-top:3px !important;
+  padding-bottom:7px !important;
+}
+
+/* Mobile */
+@media (max-width:760px){
+  .header{height:64px !important;}
+  .header::before{height:64px !important;}
+  .header::after{top:63px !important;}
+  .header .menu{top:16px !important;left:20px !important;}
+  .header .brand{top:10px !important;left:68px !important;}
+  .header .brand-main{font-size:12px !important;letter-spacing:2px !important;}
+  .header .brand-sub{font-size:7px !important;letter-spacing:2px !important;}
+  .header .languages{top:25px !important;right:12px !important;}
+}
+</style>
+
+
+<style>
+/* Raise the site-name block substantially within the fixed header */
+.header .brand{
+  top:3px !important;
+}
+.header .brand-main{
+  line-height:1.05 !important;
+}
+.header .brand-sub{
+  margin-top:2px !important;
+  line-height:1 !important;
+}
+
+@media (max-width:760px){
+  .header .brand{
+    top:3px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Move the site-name block much higher */
+.header .brand{
+  top:-6px !important;
+}
+.header .brand-main{
+  line-height:.95 !important;
+}
+.header .brand-sub{
+  margin-top:1px !important;
+  line-height:.9 !important;
+}
+
+@media (max-width:760px){
+  .header .brand{
+    top:-4px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Maximum upward position for the two-line site-name block */
+.header .brand{
+  top:-18px !important;
+}
+.header .brand-main{
+  line-height:.9 !important;
+}
+.header .brand-sub{
+  margin-top:0 !important;
+  line-height:.85 !important;
+}
+
+@media (max-width:760px){
+  .header .brand{
+    top:-12px !important;
+  }
+}
+</style>
+
+
+<style>
+/* Keep Japanese title position; make English larger and place it just beneath. */
+.header .brand{
+  top:-18px !important;
+}
+.header .brand-main{
+  line-height:.95 !important;
+}
+.header .brand-sub{
+  margin-top:5px !important;
+  font-size:14px !important;
+  letter-spacing:4px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+}
+
+@media (max-width:760px){
+  .header .brand{
+    top:-12px !important;
+  }
+  .header .brand-sub{
+    margin-top:4px !important;
+    font-size:10px !important;
+    letter-spacing:2px !important;
+  }
+}
+</style>
+
+
+<style id="final-header-visibility">
+.header .languages{
+  z-index:20 !important;
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+.header .lang{
+  display:inline-flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  font-size:13px !important;
+  letter-spacing:2px !important;
+  color:#111 !important;
+}
+.header .lang.active{
+  color:#00aeca !important;
+}
+.header .brand-sub{
+  font-size:12px !important;
+}
+@media (max-width:760px){
+  .header .languages{
+    top:25px !important;
+    right:16px !important;
+  }
+  .header .lang{
+    font-size:11px !important;
+  }
+  .header .brand-sub{
+    font-size:9px !important;
+    letter-spacing:2px !important;
+  }
+}
+</style>
+
+
+<style id="jpen-top-right">
+.header .languages{
+  position:absolute !important;
+  top:25px !important;
+  right:28px !important;
+  left:auto !important;
+  z-index:30 !important;
+  display:flex !important;
+  align-items:center !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+@media (max-width:760px){
+  .header .languages{
+    top:25px !important;
+    right:16px !important;
+  }
+}
+</style>
+
+
+<style id="miku-world-opening-final">
+/* ===== MIKU WORLD cinematic opening =====
+   0.0–0.5s  black
+   0.5–1.5s  white Miku silhouette appears
+   1.5–2.0s  cyan light / beam
+   2.0–3.0s  HELLO MIKU WORLD appears
+   3.0–3.5s  hero background fades in
+   3.5s+     opening fades away
+*/
+#opening-screen{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  overflow:hidden;
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity .7s ease;
+}
+#opening-screen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,0,0,.16),rgba(0,0,0,.16)),
+    none;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transform:scale(1.025);
+  animation:openingBgIn .7s ease-out 3s forwards;
+}
+#opening-screen::after{
+  content:"";
+  position:absolute;
+  left:5%;
+  right:5%;
+  top:50%;
+  height:2px;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,255,255,.9) 18%,
+    #fff 50%,
+    rgba(0,255,255,.9) 82%,
+    transparent 100%
+  );
+  box-shadow:0 0 16px rgba(0,255,255,.95),0 0 35px rgba(0,255,255,.5);
+  transform:scaleX(0);
+  transform-origin:center;
+  opacity:0;
+  animation:openingBeam 1s ease-out 1.5s forwards;
+  z-index:2;
+}
+#opening-screen .opening-silhouette{
+  position:absolute;
+  z-index:3;
+  width:min(44vw,520px);
+  height:min(72vh,760px);
+  object-fit:contain;
+  opacity:0;
+  filter:drop-shadow(0 0 4px rgba(0,255,255,0));
+  animation:
+    silhouetteIn 1s ease-out .5s forwards,
+    silhouetteGlow .8s ease-in-out 1.5s forwards;
+}
+#opening-screen .opening-title{
+  position:absolute;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  left:7%;
+  top:50%;
+  transform:translateY(-50%);
+  color:#fff;
+  font-family:Arial,"Yu Gothic","Meiryo",sans-serif;
+  font-size:clamp(34px,5.5vw,82px);
+  font-weight:700;
+  line-height:.9;
+  letter-spacing:7px;
+  white-space:nowrap;
+  opacity:0;
+  filter:blur(8px);
+  text-shadow:0 0 18px rgba(0,255,255,.55),0 0 40px rgba(0,255,255,.2);
+  animation:openingTitleIn 1s ease-out 2s forwards;
+}
+#opening-screen .opening-title span{
+  display:block;
+}
+#opening-screen.hide{
+  opacity:0;
+  pointer-events:none;
+}
+@keyframes silhouetteIn{
+  0%{opacity:0;transform:scale(.92)}
+  45%{opacity:1;transform:scale(1.02)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes silhouetteGlow{
+  0%{filter:drop-shadow(0 0 5px rgba(0,255,255,.1))}
+  50%{filter:drop-shadow(0 0 30px rgba(0,255,255,.95))}
+  100%{filter:drop-shadow(0 0 18px rgba(0,255,255,.55))}
+}
+@keyframes openingBeam{
+  0%{opacity:0;transform:scaleX(0)}
+  35%{opacity:1}
+  100%{opacity:1;transform:scaleX(1)}
+}
+@keyframes openingTitleIn{
+  0%{opacity:0;filter:blur(8px);transform:translateY(-50%) translateX(-18px)}
+  100%{opacity:1;filter:blur(0);transform:translateY(-50%) translateX(0)}
+}
+@keyframes openingBgIn{
+  0%{opacity:0;transform:scale(1.025)}
+  100%{opacity:1;transform:scale(1)}
+}
+@media (max-width:760px){
+  #opening-screen .opening-silhouette{
+    width:70vw;
+    height:70vh;
+  }
+  #opening-screen .opening-title{
+    left:6%;
+    top:58%;
+    font-size:clamp(27px,9vw,54px);
+    letter-spacing:4px;
+  }
+}
+</style>
+
+<style id="mobile-layer-size">
+@media (max-width:760px){
+  .world-earth{
+    left:-8vw;
+    top:4vh;
+    width:92vw;
+    height:78vh;
+  }
+  .world-miku{
+    right:-18vw;
+    bottom:-2vh;
+    width:88vw;
+    height:78vh;
+  }
+}
+</style>
+
+<style id="layer-sequence-animation">
+/* ===== Post-opening layer sequence =====
+   Opening ends -> Universe -> Earth -> MIKU.
+   Each layer keeps the exact size/placement from the previous version.
+*/
+.world-universe,
+.world-earth,
+.world-miku{
+  opacity:0;
+  transform:translateY(26px) scale(.985);
+  filter:blur(5px);
+  will-change:opacity,transform,filter;
+}
+
+/* Universe appears first */
+.world-universe{animation:worldLayerIn .95s cubic-bezier(.16,1,.3,1) forwards;}
+
+/* Earth appears second */
+.world-earth{animation:worldLayerIn .95s cubic-bezier(.16,1,.3,1) forwards;}
+
+/* MIKU appears last */
+.world-miku{animation:worldLayerIn 1.05s cubic-bezier(.16,1,.3,1) forwards;}
+
+@keyframes worldLayerIn{
+  0%{
+    opacity:0;
+    transform:translateY(26px) scale(.985);
+    filter:blur(5px);
+  }
+  60%{
+    opacity:1;
+    transform:translateY(-3px) scale(1.008);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .world-universe,
+  .world-earth,
+  .world-miku{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+}
+</style>
+
+
+<style id="final-text-after-layers">
+.copy .pop-item{
+  opacity:0;
+  transform:translateY(24px) scale(.96);
+  filter:blur(8px);
+  animation:mikuFinalTextIn .85s cubic-bezier(.16,1,.3,1) forwards !important;
+}
+.copy .pop-title{}
+.copy .pop-subtitle{}
+.copy .pop-message{}
+.copy .pop-keywords{}
+
+@keyframes mikuFinalTextIn{
+  0%{opacity:0;transform:translateY(24px) scale(.96);filter:blur(8px)}
+  60%{opacity:1;transform:translateY(-2px) scale(1.01);filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+</style>
+
+
+<style id="random-suspense-final">
+.copy .pop-item{
+  opacity:0 !important;
+  transform:translateY(24px) scale(.96) !important;
+  filter:blur(8px) !important;
+  animation:mikuFinalTextIn .85s cubic-bezier(.16,1,.3,1) forwards !important;
+}
+</style>
+
+
+<style id="cinematic-opening-v2">
+/* ===== Cinematic reveal =====
+   Universe: born from darkness
+   Earth: approaches from deep space
+   MIKU: forms from a scanning light
+   Text: floats in after a short silence
+*/
+.world-universe{
+  opacity:0;
+  transform:scale(.72);
+  filter:blur(7px) brightness(.65);
+  animation:universeAwaken .95s cubic-bezier(.16,1,.3,1) 4.35s forwards !important;
+}
+
+.world-earth{
+  opacity:0;
+  transform:scale(.35);
+  filter:blur(8px) brightness(.72);
+  animation:earthApproach 1.5s cubic-bezier(.16,1,.3,1) 5.65s forwards !important;
+}
+
+.world-miku{
+  opacity:0;
+  transform:translateY(16px) scale(.985);
+  filter:blur(9px) brightness(.8);
+  clip-path:inset(100% 0 0 0);
+  animation:mikuForm 3.5s cubic-bezier(.16,1,.3,1) 7.95s forwards !important;
+}
+
+/* Extra scanning light across MIKU while she forms. */
+.world-miku::after{display:none}
+
+@keyframes universeAwaken{
+  0%{
+    opacity:0;
+    transform:scale(1.14);
+    filter:blur(7px) brightness(.65);
+  }
+  35%{opacity:.55}
+  100%{
+    opacity:1;
+    transform:scale(1);
+    filter:blur(0) brightness(1);
+  }
+}
+
+@keyframes earthApproach{
+  0%{
+    opacity:0;
+    transform:scale(.52);
+    filter:blur(8px) brightness(.72);
+  }
+  55%{
+    opacity:1;
+    transform:scale(1.035);
+    filter:blur(0) brightness(1.12);
+  }
+  100%{
+    opacity:1;
+    transform:scale(1);
+    filter:blur(0) brightness(1);
+  }
+}
+
+@keyframes mikuForm{
+  0%{opacity:0;transform:translateY(18px) scale(.985);filter:blur(10px) brightness(.75);clip-path:inset(100% 0 0 0);}
+  15%{opacity:.42;transform:translateY(11px) scale(.99);filter:blur(7px) brightness(.82);clip-path:inset(82% 0 0 0);}
+  30%{opacity:.68;transform:translateY(6px) scale(.994);filter:blur(4.5px) brightness(.89);clip-path:inset(65% 0 0 0);}
+  43%{opacity:.82;transform:translateY(3px) scale(.997);filter:blur(2.8px) brightness(.94);clip-path:inset(53% 0 0 0);}
+  53%{opacity:.88;transform:translateY(2px) scale(.998);filter:blur(2px) brightness(.96);clip-path:inset(47% 0 0 0);}
+  65%{opacity:.90;transform:translateY(1px) scale(.999);filter:blur(1.5px) brightness(.98);clip-path:inset(43% 0 0 0);}
+  76%{opacity:.91;transform:translateY(1px) scale(1);filter:blur(1.2px) brightness(.99);clip-path:inset(41% 0 0 0);}
+  82%{opacity:.92;transform:translateY(.5px) scale(1);filter:blur(.9px) brightness(1);clip-path:inset(40% 0 0 0);}
+  91%{opacity:.98;transform:translateY(0) scale(1.002);filter:blur(.25px) brightness(1.02);clip-path:inset(18% 0 0 0);}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0) brightness(1);clip-path:inset(0 0 0 0);}
+}
+
+/* Very short pause after MIKU, then the title floats in. */
+.copy .pop-item{
+  opacity:0 !important;
+  transform:translateY(18px) scale(.97) !important;
+  filter:blur(7px) !important;
+  animation:mikuWorldTitleReveal .9s cubic-bezier(.16,1,.3,1) forwards !important;
+}
+.copy .pop-title{animation-delay:9.95s !important;}
+.copy .pop-subtitle{animation-delay:10.25s !important;}
+.copy .pop-message{animation-delay:10.55s !important;}
+.copy .pop-keywords{animation-delay:10.85s !important;}
+
+@keyframes mikuWorldTitleReveal{
+  0%{
+    opacity:0;
+    transform:translateY(18px) scale(.97);
+    filter:blur(7px);
+  }
+  60%{
+    opacity:1;
+    transform:translateY(-2px) scale(1.01);
+    filter:blur(0);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .world-universe,
+  .world-earth,
+  .world-miku,
+  .copy .pop-item{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    clip-path:none !important;
+  }
+}
+</style>
+
+
+<style id="miku-scan-light">
+.world-layers::after{
+  content:"";
+  position:absolute;
+  z-index:5;
+  left:-15%;
+  right:-15%;
+  top:0;
+  height:3px;
+  opacity:0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0),
+    rgba(0,255,255,.95),
+    #fff,
+    rgba(0,255,255,.95),
+    rgba(255,255,255,0),
+    transparent
+  );
+  box-shadow:0 0 14px rgba(0,255,255,.95),0 0 32px rgba(0,255,255,.5);
+  animation:mikuScan 3.5s cubic-bezier(.22,.72,.25,1) 7.95s forwards;
+  pointer-events:none;
+}
+
+@keyframes mikuScan{
+  0%{top:calc(92vh + 207px);opacity:0}
+  15%{top:calc(72.56vh + 207px);opacity:.42}
+  30%{top:calc(54.20vh + 207px);opacity:.68}
+  43%{top:calc(41.24vh + 207px);opacity:.82}
+  53%{top:calc(34.76vh + 207px);opacity:.88}
+  65%{top:calc(30.44vh + 207px);opacity:.90}
+  76%{top:calc(28.28vh + 207px);opacity:.91}
+  82%{top:calc(27.20vh + 207px);opacity:.92}
+  91%{top:calc(3.44vh + 207px);opacity:.98}
+  100%{top:calc(-16vh + 207px);opacity:0}
+}
+</style>
+
+</head>
+<div id="opening-screen" aria-hidden="true">
+  <img class="opening-silhouette" src="miku-silhouette.png" alt="">
+  <div class="opening-title">
+    <span>HELLO</span>
+    <span>MIKU</span>
+    <span>WORLD</span>
+  </div>
+</div>
+
+<body>
+
+
+<section class="hero">
+  <div class="world-layers" aria-hidden="true">
+    <img class="world-universe" src="Universe Piapro.png" alt="">
+    <img class="world-earth" src="Neon Earth.png" alt="">
+    <img class="world-miku" src="HATSUNE MIKU page1.png" alt="">
+  </div>
+  <div class="hero-shade"></div>
+
+  <header class="header">
+    <button class="menu" id="menuButton" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="brand">
+      <p class="brand-main">初音ミク非公式ファンサイト</p>
+      <p class="brand-sub">UNOFFICIAL FAN SITE</p>
+    </div>
+
+    <nav class="languages" aria-label="Language">
+      <button class="lang active" data-lang="ja">JP</button>
+      <button class="lang" data-lang="en">EN</button>
+    </nav>
+  </header>
+
+  <div class="copy">
+    <h1 class="pop-item pop-title"><span>HELLO</span><span>MIKU</span><span>WORLD</span></h1>
+    <p class="subtitle pop-item pop-subtitle" data-key="subtitle">A WORLD CONNECTED BY DIVA</p>
+    <p class="ja-copy pop-item pop-message" data-key="message">
+      ミクでつながる。<br>
+      ミクでひろがる。<br>
+      世界は、もっとやさミクなれる。
+    </p>
+    <div class="rule"></div>
+    <p class="keywords pop-item pop-keywords" data-key="keywords">MUSIC<br>PEOPLE<br>CREATION</p>
+  </div>
+
+  <div class="join-area">
+    
+  </div>
+<footer class="legal-footer">
+    <span data-key="unofficial">UNOFFICIAL FAN-MADE WEBSITE · NOT AFFILIATED WITH OR ENDORSED BY CRYPTON FUTURE MEDIA, INC.</span>
+    <p class="disclaimer-jp" id="disclaimerText" data-key="disclaimer">これは非公式ファンサイトです。クリプトン・フューチャー・メディア株式会社とは提携・公認のないファン制作サイトです。</p><br>
+    <span data-key="pclCredit">「初音ミク」はクリプトン・フューチャー・メディア株式会社のキャラクターです。このサイトはピアプロ・キャラクター・ライセンスに基づいて制作されています。</span>
+    · <a href="https://piapro.jp/license/pcl/summary" target="_blank" rel="noopener noreferrer" data-key="pclLink">PCL</a>
+  </footer>
+</section>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <div class="card">
+    <button class="close" id="closeButton" aria-label="閉じる">×</button>
+    <div class="kicker">MIKU WORLD</div>
+    <h2 id="welcomeTitle">WELCOME.</h2>
+    <p data-key="modal">あなたもMIKU WORLDの一員です。音楽には国境がありません。</p>
+    <div class="legal-note">
+      <p data-key="legalModal">MIKU WORLDは非公式のファンメイドサイトです。初音ミクのキャラクター利用については、クリプトン・フューチャー・メディア株式会社の最新のキャラクター利用ガイドラインおよびPCLをご確認ください。</p>
+      <a href="https://piapro.jp/license/character_guideline" target="_blank" rel="noopener noreferrer" data-key="guideline">キャラクター利用のガイドライン</a><br>
+      <a href="https://piapro.jp/license/pcl/summary" target="_blank" rel="noopener noreferrer" data-key="pclFull">ピアプロ・キャラクター・ライセンス（PCL）</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const translations={
+  ja:{
+    subtitle:"A WORLD CONNECTED BY DIVA",
+    message:"ミクでつながる。<br>ミクでひろがる。<br>世界は、もっとやさミクなれる。",
+    keywords:"MUSIC<br>PEOPLE<br>CREATION",
+    join:"✦　",
+    modal:"あなたもMIKU WORLDの一員です。音楽には国境がありません。",
+    unofficial:"UNOFFICIAL FAN-MADE WEBSITE · NOT AFFILIATED WITH OR ENDORSED BY CRYPTON FUTURE MEDIA, INC.",
+    pclCredit:"「初音ミク」はクリプトン・フューチャー・メディア株式会社のキャラクターです。このサイトはピアプロ・キャラクター・ライセンスに基づいて制作されています。",
+    pclLink:"PCL",
+    legalModal:"MIKU WORLDは非公式のファンメイドサイトです。初音ミクのキャラクター利用については、クリプトン・フューチャー・メディア株式会社の最新のキャラクター利用ガイドラインおよびPCLをご確認ください。",
+    guideline:"キャラクター利用のガイドライン",
+    pclFull:"ピアプロ・キャラクター・ライセンス（PCL）",
+    disclaimer:"これは非公式ファンサイトです。クリプトン・フューチャー・メディア株式会社とは提携・公認のないファン制作サイトです。"
+  },
+  en:{
+    subtitle:"A WORLD CONNECTED BY DIVA",
+    message:"Connected by MIKU.<br>Expanded by MIKU.<br>The world can become MIKUner.",
+    keywords:"MUSIC<br>PEOPLE<br>CREATION",
+    join:"✦　",
+    modal:"You are part of MIKU WORLD. Music has no borders.",
+    unofficial:"UNOFFICIAL FAN-MADE WEBSITE · NOT AFFILIATED WITH OR ENDORSED BY CRYPTON FUTURE MEDIA, INC.",
+    pclCredit:"Hatsune Miku is a character of Crypton Future Media, INC. This site is a fan-made work created under the Piapro Character License.",
+    pclLink:"PCL",
+    legalModal:"MIKU WORLD is an unofficial fan-made website. Please check Crypton Future Media, INC.'s latest Character Usage Guidelines and the PCL before using Hatsune Miku or related characters.",
+    guideline:"Character Usage Guidelines",
+    pclFull:"Piapro Character License (PCL)",
+    disclaimer:"This is an unofficial fan site. It is a fan-made website and is not affiliated with, or endorsed by, Crypton Future Media, INC."
+  },
+  id:{
+    subtitle:"DUNIA YANG TERHUBUNG OLEH MUSIK",
+    message:"Terhubung melalui suara.<br>Meluas melalui hati.<br>Dunia bisa menjadi lebih baik.",
+    keywords:"MUSIK<br>MANUSIA<br>KREASI",
+    join:"✦　GABUNG MIKU WORLD →",
+    modal:"Kamu adalah bagian dari MIKU WORLD. Musik tidak memiliki batas.",
+    unofficial:"SITUS PENGGEMAR TIDAK RESMI · TIDAK BERAFILIASI DENGAN ATAU DIDUKUNG OLEH CRYPTON FUTURE MEDIA, INC.",
+    pclCredit:"Hatsune Miku adalah karakter milik Crypton Future Media, INC. Situs ini adalah karya penggemar yang dibuat berdasarkan Piapro Character License.",
+    pclLink:"PCL",
+    legalModal:"MIKU WORLD adalah situs penggemar tidak resmi. Harap periksa Pedoman Penggunaan Karakter dan PCL terbaru dari Crypton Future Media, INC. sebelum menggunakan Hatsune Miku atau karakter terkait.",
+    guideline:"Pedoman Penggunaan Karakter",
+    pclFull:"Piapro Character License (PCL)",
+    disclaimer:"Ini adalah situs penggemar tidak resmi. Situs ini dibuat oleh penggemar dan tidak berafiliasi dengan atau didukung oleh Crypton Future Media, INC."
+  },
+  zh:{
+    subtitle:"一个由音乐连接的世界",
+    message:"因声音相连。<br>因心而延伸。<br>世界可以变得更加温柔。",
+    keywords:"音乐<br>人们<br>创作",
+    join:"✦　加入 MIKU WORLD →",
+    modal:"你也是 MIKU WORLD 的一员。音乐没有国界。",
+    unofficial:"非官方粉丝网站 · 与 CRYPTON FUTURE MEDIA, INC. 无关联，也未获其认可或背书。",
+    pclCredit:"初音未来是 Crypton Future Media, INC. 的角色。本网站是依据 Piapro Character License 制作的粉丝作品。",
+    pclLink:"PCL",
+    legalModal:"MIKU WORLD 是非官方粉丝网站。使用初音未来或相关角色前，请确认 Crypton Future Media, INC. 最新的角色使用指南和 PCL。",
+    guideline:"角色使用指南",
+    pclFull:"Piapro Character License（PCL）",
+    disclaimer:"这是一个非官方粉丝网站。本网站由粉丝制作，与 Crypton Future Media, INC. 没有合作关系，也未获得其认可。"
+  },
+  es:{
+    subtitle:"UN MUNDO CONECTADO POR LA MÚSICA",
+    message:"Conectados por el sonido.<br>Unidos por el corazón.<br>El mundo puede ser más amable.",
+    keywords:"MÚSICA<br>PERSONAS<br>CREACIÓN",
+    join:"✦　UNIRSE A MIKU WORLD →",
+    modal:"Tú eres parte de MIKU WORLD. La música no tiene fronteras.",
+    unofficial:"SITIO DE FANS NO OFICIAL · NO ESTÁ AFILIADO NI RESPALDADO POR CRYPTON FUTURE MEDIA, INC.",
+    pclCredit:"Hatsune Miku es un personaje de Crypton Future Media, INC. Este sitio es una obra de fans creada bajo la Piapro Character License.",
+    pclLink:"PCL",
+    legalModal:"MIKU WORLD es un sitio de fans no oficial. Antes de utilizar a Hatsune Miku u otros personajes relacionados, consulta las Directrices de Uso de Personajes y el PCL más recientes de Crypton Future Media, INC.",
+    guideline:"Directrices de Uso de Personajes",
+    pclFull:"Piapro Character License (PCL)",
+    disclaimer:"Este es un sitio de fans no oficial. Es un sitio creado por fans y no está afiliado ni respaldado por Crypton Future Media, INC."
+  }
+};
+
+function setLanguage(lang){
+  const data=translations[lang]||translations.ja;
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    const key=el.dataset.key;
+    if(data[key]!==undefined) el.innerHTML=data[key];
+  });
+  document.querySelectorAll(".lang").forEach(btn=>{
+    const active=btn.dataset.lang===lang;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-pressed",active);
+  });
+}
+
+document.querySelectorAll(".lang").forEach(btn=>{
+  btn.addEventListener("click",()=>setLanguage(btn.dataset.lang));
+});
+
+const modal=document.getElementById("modal");
+const join=document.getElementById("joinButton");
+const close=document.getElementById("closeButton");
+const menu=document.getElementById("menuButton");
+
+if(join) if(join) join.addEventListener("click",()=>modal.classList.add("open"));
+if(close) close.addEventListener("click",()=>modal.classList.remove("open"));
+modal.addEventListener("click",e=>{
+  if(e.target===modal) modal.classList.remove("open");
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") modal.classList.remove("open");
+});
+
+/* The menu button is intentionally reserved for future community navigation. */
+menu.addEventListener("click",()=>modal.classList.add("open"));
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const allowedLanguages = ["ja", "en"];
+
+  document.querySelectorAll("[data-lang]").forEach(btn => {
+    const lang = btn.getAttribute("data-lang");
+    if (!allowedLanguages.includes(lang)) {
+      btn.style.display = "none";
+    }
+  });
+
+  const originalUpdate = window.updateDisclaimer;
+  if (typeof originalUpdate === "function") {
+    const safeUpdateDisclaimer = window.updateDisclaimer;
+    window.updateDisclaimer = function(lang) {
+      safeUpdateDisclaimer(allowedLanguages.includes(lang) ? lang : "ja");
+    };
+  }
+});
+</script>
+
+
+
+
+<script>
+document.addEventListener("contextmenu",e=>{if(e.target.closest(".hero-image"))e.preventDefault();});
+document.addEventListener("dragstart",e=>{if(e.target.closest(".hero-image"))e.preventDefault();});
+</script>
+<script id="miku-world-opening-js">
+window.addEventListener("load",()=>{
+  const opening=document.getElementById("opening-screen");
+  if(!opening)return;
+
+  // Storyboard timing:
+  // 0.0–0.5s  black
+  // 0.5–1.5s  silhouette appears
+  // 1.5–2.0s  cyan light
+  // 2.0–3.0s  HELLO MIKU WORLD
+  // 3.0–3.5s  hero background enters
+  // 3.6s      opening fades out
+  setTimeout(()=>{
+    opening.classList.add("hide");
+  },3600);
+
+  setTimeout(()=>{
+    opening.remove();
+  },4400);
+});
+</script>
+
+
+<script id="random-suspense-timing">
+window.addEventListener("load",()=>{
+  const universe=document.querySelector(".world-universe");
+  const earth=document.querySelector(".world-earth");
+  const miku=document.querySelector(".world-miku");
+
+  if(!universe || !earth || !miku) return;
+
+  // The order is fixed, but the pauses are intentionally unpredictable.
+  // This keeps the "what comes next?" feeling without making the sequence chaotic.
+  const randomBetween=(min,max)=>min + Math.random()*(max-min);
+
+  const openingEnd=4.45;
+
+  // Random pauses after each layer appears.
+  const gap1=randomBetween(0.85,1.65);
+  const gap2=randomBetween(1.00,1.90);
+  const finalGap=randomBetween(0.85,1.55);
+
+  const earthTime=openingEnd + 0.95 + gap1;
+  const mikuTime=earthTime + 0.95 + gap2;
+  const textTime=mikuTime + 1.05 + finalGap;
+
+  universe.style.animationDelay=`${openingEnd}s`;
+  earth.style.animationDelay=`${earthTime}s`;
+  miku.style.animationDelay=`${mikuTime}s`;
+
+  const textItems=[
+    [".copy .pop-title", textTime],
+    [".copy .pop-subtitle", textTime+0.24],
+    [".copy .pop-message", textTime+0.48],
+    [".copy .pop-keywords", textTime+0.72]
+  ];
+
+  textItems.forEach(([selector,time])=>{
+    const el=document.querySelector(selector);
+    if(el){
+      el.style.animationDelay=`${time}s`;
+      el.style.animationName="mikuFinalTextIn";
+    }
+  });
+
+  console.log("MIKU WORLD suspense timing:",{
+    universe:openingEnd.toFixed(2)+"s",
+    earth:earthTime.toFixed(2)+"s",
+    miku:mikuTime.toFixed(2)+"s",
+    text:textTime.toFixed(2)+"s"
+  });
+});
+</script>
+
+</body>
+</html>
+
+<style>
+.pop-join,
+.join-button,
+.join-cta,
+.cta-join {
+  display: none !important;
+}
+</style>
+<style id="static-layer-size-reference">
+.copy .pop-item{
+  animation:none !important;
+  opacity:1 !important;
+  transform:none !important;
+  filter:none !important;
+}
+</style>
+
+<style id="no-combined-miku">
+.hero-image{
+  display:none !important;
+}
+</style>
+
+<style id="no-combined-miku-final">
+img[src="miku.png"],
+.hero-image{
+  display:none !important;
+  visibility:hidden !important;
+}
+</style>
+
+<style id="suspense-timing-note">
+/*
+  Opening -> 4.45s Universe -> 5.95s Earth -> 7.45s MIKU -> 8.95s text.
+  The pauses are intentional: each layer gets a moment to build anticipation.
+*/
+</style>
+
+
+
+
+
+
+
+
+
+<style id="miku-exact-line-sync-final">
+.world-miku{
+  animation-duration:3.5s !important;
+  animation-timing-function:linear !important;
+}
+.world-layers::after{
+  animation-duration:3.5s !important;
+  animation-timing-function:linear !important;
+}
+</style>
+
+<style id="hello-miku-world-three-lines">
+.hero-title span{
+  display:block !important;
+}
+</style>
+
+<style id="mobile-same-as-pc">
+@media (max-width:760px){
+  .world-universe{
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+  }
+  .world-earth{
+    left:8vw !important;
+    top:-2vh !important;
+    width:64vw !important;
+    height:106vh !important;
+    object-fit:contain !important;
+    object-position:center !important;
+  }
+  .world-miku{
+    right:-5vw !important;
+    bottom:-8vh !important;
+    width:63vw !important;
+    height:108vh !important;
+    object-fit:contain !important;
+    object-position:center bottom !important;
+  }
+  .copy{
+    left:3.3% !important;
+    top:27% !important;
+    width:410px !important;
+  }
+  h1{
+    font-size:clamp(54px,7vw,110px) !important;
+    line-height:.88 !important;
+    letter-spacing:9px !important;
+  }
+  .subtitle{
+    margin:22px 0 0 !important;
+    font-size:12px !important;
+    letter-spacing:4px !important;
+  }
+  .ja-copy{
+    margin:27px 0 0 !important;
+    font-size:17px !important;
+    line-height:1.8 !important;
+  }
+  .keywords{
+    margin:16px 0 0 !important;
+    font-size:11px !important;
+    letter-spacing:3px !important;
+    line-height:1.8 !important;
+  }
+  .header{
+    height:68px !important;
+  }
+  .header::before{
+    height:68px !important;
+  }
+  .header::after{
+    top:67px !important;
+  }
+  .header .menu{
+    top:18px !important;
+    left:28px !important;
+  }
+  .header .brand{
+    top:-18px !important;
+    left:90px !important;
+  }
+  .header .brand-main{
+    font-size:17px !important;
+    letter-spacing:3px !important;
+    line-height:.95 !important;
+  }
+  .header .brand-sub{
+    margin-top:5px !important;
+    font-size:12px !important;
+    letter-spacing:4px !important;
+    line-height:1 !important;
+  }
+  .header .languages{
+    top:25px !important;
+    right:28px !important;
+  }
+  .header .lang{
+    font-size:13px !important;
+    letter-spacing:2px !important;
+  }
+  #opening-screen .opening-silhouette{
+    width:min(44vw,520px) !important;
+    height:min(72vh,760px) !important;
+  }
+  #opening-screen .opening-title{
+    left:7% !important;
+    top:50% !important;
+    font-size:clamp(34px,5.5vw,82px) !important;
+    letter-spacing:7px !important;
+  }
+  .legal-footer{
+    bottom:12px !important;
+    font-size:9px !important;
+    width:min(94%,980px) !important;
+  }
+}
+</style>
+
+
+<style id="iphone14pro-layout">
+/* iPhone 14 Pro portrait: 393 × 852 CSS px */
+@media (max-width:430px) and (orientation:portrait){
+  html,body{
+    width:100%;
+    min-width:0;
+    overflow-x:hidden;
+  }
+
+  .hero{
+    width:100vw;
+    height:100svh;
+    min-height:852px;
+    overflow:hidden;
+  }
+
+  /* Space background */
+  .world-universe{
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+  }
+
+  /* Earth: large but contained inside the phone composition */
+  .world-earth{
+    left:-15vw !important;
+    top:12vh !important;
+    width:112vw !important;
+    height:58vh !important;
+    object-fit:contain !important;
+    object-position:center !important;
+  }
+
+  /* Miku: foreground figure anchored to the lower-right */
+  .world-miku{
+    right:-30vw !important;
+    bottom:-3vh !important;
+    width:108vw !important;
+    height:70vh !important;
+    object-fit:contain !important;
+    object-position:center bottom !important;
+  }
+
+  /* Hero copy */
+  .copy{
+    left:7vw !important;
+    top:23% !important;
+    width:58vw !important;
+    z-index:6 !important;
+  }
+
+  h1{
+    font-size:clamp(42px,14vw,58px) !important;
+    line-height:.88 !important;
+    letter-spacing:4px !important;
+  }
+
+  .subtitle{
+    margin-top:15px !important;
+    font-size:8px !important;
+    letter-spacing:2px !important;
+    white-space:nowrap !important;
+  }
+
+  .ja-copy{
+    margin-top:18px !important;
+    font-size:13px !important;
+    line-height:1.75 !important;
+    white-space:nowrap !important;
+  }
+
+  .rule{
+    width:42px !important;
+    margin-top:13px !important;
+  }
+
+  .keywords{
+    margin-top:11px !important;
+    font-size:9px !important;
+    letter-spacing:2px !important;
+    line-height:1.7 !important;
+  }
+
+  /* Compact mobile header */
+  .header{
+    height:60px !important;
+  }
+  .header::before{
+    height:60px !important;
+  }
+  .header::after{
+    top:59px !important;
+  }
+
+  .header .menu{
+    top:17px !important;
+    left:18px !important;
+    width:34px !important;
+    height:28px !important;
+  }
+  .header .menu span{
+    width:34px !important;
+    height:2px !important;
+    margin-bottom:7px !important;
+  }
+
+  .header .brand{
+    top:-8px !important;
+    left:67px !important;
+  }
+  .header .brand-main{
+    font-size:12px !important;
+    letter-spacing:2px !important;
+    line-height:.95 !important;
+  }
+  .header .brand-sub{
+    margin-top:4px !important;
+    font-size:8px !important;
+    letter-spacing:2px !important;
+    line-height:1 !important;
+  }
+
+  .header .languages{
+    top:20px !important;
+    right:15px !important;
+    gap:12px !important;
+  }
+  .header .lang{
+    font-size:10px !important;
+    letter-spacing:1px !important;
+    padding:3px 0 7px !important;
+  }
+
+  /* Opening screen scaled for the phone */
+  #opening-screen .opening-silhouette{
+    width:62vw !important;
+    height:62vh !important;
+  }
+  #opening-screen .opening-title{
+    left:8% !important;
+    top:54% !important;
+    font-size:clamp(30px,10vw,42px) !important;
+    letter-spacing:4px !important;
+  }
+
+  .legal-footer{
+    bottom:7px !important;
+    width:92vw !important;
+    font-size:7px !important;
+    line-height:1.45 !important;
+  }
+
+  .legal-footer .disclaimer-jp{
+    font-size:9px !important;
+    padding:3px 7px !important;
+  }
+}
+
+/* iPhone 14 Pro landscape safety */
+@media (max-width:932px) and (orientation:landscape){
+  .hero{
+    min-height:100svh !important;
+  }
+}
+</style>
+
+<style id="iphone14pro-line-position-final">
+@media (max-width:430px) and (orientation:portrait){
+  .world-layers::after{
+    /* 100px lower than the previous iPhone 14 Pro position */
+    transform:translateY(100px);
+  }
+}
+</style>
