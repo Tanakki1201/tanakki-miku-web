@@ -2712,7 +2712,7 @@
     }
 
     .metric-label::after {
-      content: " / 60 MIN";
+      content: attr(data-window);
       opacity: .62;
     }
 
@@ -2935,7 +2935,7 @@
       .metric-label::after {
         display: block;
         margin-top: 3px;
-        content: "60 MIN";
+        content: attr(data-window);
       }
 
       .metric-value {
@@ -3023,6 +3023,84 @@
     }
   </style>
 
+
+  <style id="daily-jst-pass">
+    .daily-time-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(38,118,133,.18);
+      color: #42646e;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+
+    .daily-time-controls label {
+      white-space: nowrap;
+    }
+
+    .daily-time-controls .map-country-select {
+      min-width: 230px;
+    }
+
+    .signal-feed {
+      display: block !important;
+    }
+
+    .signal-list {
+      max-height: 310px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 8px;
+      scrollbar-width: thin;
+    }
+
+    .signal-list .signal-event {
+      display: block !important;
+      margin: 0;
+    }
+
+    .signal-list .signal-event + .signal-event {
+      border-top: 1px solid rgba(38,118,133,.10);
+    }
+
+    .signal-empty {
+      margin: 0;
+      padding: 18px 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: rgba(66,100,110,.72);
+    }
+
+    .signal-time {
+      opacity: .72;
+    }
+
+    /* Cancel the previous "only one latest signal" hiding rule. */
+    .signal-feed .signal-event:nth-of-type(n+3) {
+      display: block;
+    }
+
+    @media (max-width: 860px) {
+      .daily-time-controls {
+        font-size: 12px;
+      }
+
+      .daily-time-controls .map-country-select {
+        min-width: 0;
+        width: 62%;
+      }
+
+      .signal-list {
+        max-height: 260px;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -3077,7 +3155,7 @@
           <strong>世界で生まれた、検証済みのミク文化だけを観測する。</strong>
           <span>直近60分。推測しない。見つけたSIGNALだけを表示する。</span>
         </p>
-        <div class="demo-note" id="connectionNote" data-mode="CONNECTING">直近60分の検証済みSIGNAL。</div>
+        <div class="demo-note" id="connectionNote" data-mode="CONNECTING">本日 00:00–23:59 JST の検証済みSIGNAL。30分ごとに更新。</div>
       </div>
 
       <div class="orb-zone" id="orbZone" aria-label="インタラクティブなMIKU WORLD世界地図">
@@ -3136,11 +3214,17 @@
             <option value="GLOBAL">GLOBAL</option>
           </select>
         </div>
+        <div class="daily-time-controls">
+          <label for="timePicker">TIME / JST</label>
+          <select class="map-country-select" id="timePicker" aria-label="表示する時間帯を選択">
+            <option value="ALL">TODAY / 00:00–23:59</option>
+          </select>
+        </div>
       </div>
 
       <aside class="signal-panel panel-corners" id="signalPanel" aria-live="polite" aria-label="Selected country signal information">
         <div class="panel-topline">
-          <span>NOW</span>
+          <span>DAILY ARCHIVE</span>
           <span class="panel-live" id="observerMode"><span class="live-dot" aria-hidden="true"></span> CONNECTING...</span>
         </div>
 
@@ -3155,20 +3239,20 @@
 
         <div class="panel-metrics">
           <div class="metric">
-            <span class="metric-label" title="この国について直近60分に観測された検証済みSIGNAL件数">SIGNALS</span>
+            <span class="metric-label" data-window=" / SELECTED" title="選択した時間帯・国の検証済みSIGNAL件数">SIGNALS</span>
             <span class="metric-value" id="metricSignals">0</span>
           </div>
           <div class="metric">
-            <span class="metric-label" title="直近60分の全世界の検証済みSIGNAL総数。1 SIGNAL = 1 PULSE">WORLD PULSE</span>
+            <span class="metric-label" data-window=" / TODAY" title="本日00:00–23:59 JSTの全世界の検証済みSIGNAL総数。1 SIGNAL = 1 PULSE">WORLD PULSE</span>
             <span class="metric-value" id="metricPulse">--</span>
           </div>
         </div>
 
         <div class="signal-feed" id="signalFeed">
-          <p class="signal-feed-title">LATEST SIGNAL</p>
-          <p class="signal-event"><em id="eventOneType">MUSIC</em><a id="eventOne" class="signal-title-link">LISTENING...</a></p>
-          <p class="signal-event"><em id="eventTwoType">MUSIC</em><a id="eventTwo" class="signal-title-link">WAITING...</a></p>
-          <p class="signal-event"><em id="eventThreeType">MUSIC</em><a id="eventThree" class="signal-title-link">GLOBAL IF UNKNOWN.</a></p>
+          <p class="signal-feed-title" id="signalFeedTitle">TODAY'S SIGNALS</p>
+          <div id="signalList" class="signal-list" aria-live="polite">
+            <p class="signal-empty">LISTENING...</p>
+          </div>
         </div>
       </aside>
 
@@ -3248,17 +3332,23 @@
     /* MIKU WORLD OBSERVER v3 browser client.
        - No login / no upload / no GPS / no visitor geolocation.
        - Country comes only from observer data; unknown is GLOBAL.
-       - WORLD PULSE is the verified SIGNAL count observed during the last 60 minutes.
-       - No fabricated LIVE activity: unavailable data becomes OFFLINE / LISTENING. */
+       - Public daily window is 00:00–23:59 Japan Standard Time.
+       - WORLD PULSE is today's verified MUSIC + CREATION SIGNAL count.
+       - Observer itself still runs every 30 minutes with a 60-minute lookback.
+       - No fabricated activity: unavailable data becomes OFFLINE / LISTENING. */
 
     const DEFAULT_API_BASE = "https://miku-world-observer.tanakki-miku-world.workers.dev";
+    const JST_TIME_ZONE = "Asia/Tokyo";
+
     window.MIKU_WORLD_CONFIG = window.MIKU_WORLD_CONFIG || {};
-    window.MIKU_WORLD_CONFIG.API_BASE = window.MIKU_WORLD_CONFIG.API_BASE || DEFAULT_API_BASE;
+    window.MIKU_WORLD_CONFIG.API_BASE =
+      window.MIKU_WORLD_CONFIG.API_BASE || DEFAULT_API_BASE;
 
     const countryNames = {
       JP:"JAPAN", CN:"CHINA", ID:"INDONESIA", US:"UNITED STATES", MX:"MEXICO",
       GB:"UNITED KINGDOM", FR:"FRANCE", DE:"GERMANY", AU:"AUSTRALIA", KR:"SOUTH KOREA",
       SG:"SINGAPORE", PH:"PHILIPPINES", CL:"CHILE", CO:"COLOMBIA",
+      TH:"THAILAND",
       GLOBAL:"GLOBAL"
     };
 
@@ -3266,9 +3356,21 @@
       ? new Intl.DisplayNames(["en"], { type:"region" })
       : null;
 
+    const jstClock = new Intl.DateTimeFormat("ja-JP", {
+      timeZone:JST_TIME_ZONE,
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    });
+
     const safeSnapshot = {
-      schemaVersion:3, mode:"OFFLINE", worldPulse:0,
-      recentActivity:[], recentSignals:[], generatedAt:null, syncSeconds:120
+      schemaVersion:3,
+      mode:"OFFLINE",
+      worldPulse:0,
+      recentActivity:[],
+      recentSignals:[],
+      generatedAt:null,
+      syncSeconds:120
     };
 
     const worldBoot=document.getElementById("worldBoot");
@@ -3282,36 +3384,41 @@
     const panelStatus=document.getElementById("panelStatus");
     const metricSignals=document.getElementById("metricSignals");
     const metricPulse=document.getElementById("metricPulse");
-    const eventOne=document.getElementById("eventOne");
-    const eventOneType=document.getElementById("eventOneType");
-    const eventTwo=document.getElementById("eventTwo");
-    const eventTwoType=document.getElementById("eventTwoType");
-    const eventThree=document.getElementById("eventThree");
-    const eventThreeType=document.getElementById("eventThreeType");
+    const signalFeedTitle=document.getElementById("signalFeedTitle");
+    const signalList=document.getElementById("signalList");
     const worldPulseOverlay=document.getElementById("worldPulseOverlay");
     const pulseMessage=document.getElementById("pulseMessage");
     const pulseMessageSub=document.getElementById("pulseMessageSub");
     const countryPicker=document.getElementById("countryPicker");
+    const timePicker=document.getElementById("timePicker");
     const signalNodes=[...document.querySelectorAll(".signal-node")];
     const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let state=safeSnapshot;
     let selectedCountry="JP";
+    let selectedHour="ALL";
     let knownSignalIds=new Set();
 
-    function finishBoot(){ if(worldBoot) worldBoot.classList.add("is-finished"); }
-    if(reducedMotion) finishBoot(); else window.setTimeout(finishBoot,2750);
+    function finishBoot(){
+      if(worldBoot) worldBoot.classList.add("is-finished");
+    }
+
+    if(reducedMotion) finishBoot();
+    else window.setTimeout(finishBoot,2750);
 
     function normalizeCountryCode(value){
       const code=String(value||"GLOBAL").trim().toUpperCase();
-      return /^[A-Z]{2}$/.test(code)||code==="GLOBAL"?code:"GLOBAL";
+      return /^[A-Z]{2}$/.test(code)||code==="GLOBAL" ? code : "GLOBAL";
     }
 
     function countryName(code){
       const normalized=normalizeCountryCode(code);
       if(countryNames[normalized]) return countryNames[normalized];
-      if(regionNames && normalized!=="GLOBAL") {
-        try { return String(regionNames.of(normalized)||normalized).toUpperCase(); } catch {}
+
+      if(regionNames && normalized!=="GLOBAL"){
+        try{
+          return String(regionNames.of(normalized)||normalized).toUpperCase();
+        }catch{}
       }
       return normalized;
     }
@@ -3319,9 +3426,11 @@
     function ensureCountryOption(code){
       const normalized=normalizeCountryCode(code);
       if([...countryPicker.options].some(option=>option.value===normalized)) return;
+
       const option=document.createElement("option");
       option.value=normalized;
       option.textContent=`${countryName(normalized)} / ${normalized}`;
+
       const globalOption=[...countryPicker.options].find(item=>item.value==="GLOBAL");
       countryPicker.insertBefore(option,globalOption||null);
     }
@@ -3332,6 +3441,18 @@
         ...(snapshot.recentSignals||[]).map(item=>normalizeCountryCode(item.countryCode))
       ]);
       codes.forEach(ensureCountryOption);
+    }
+
+    function buildTimePicker(){
+      if(!timePicker) return;
+      for(let hour=0; hour<24; hour++){
+        const option=document.createElement("option");
+        option.value=String(hour).padStart(2,"0");
+        option.textContent=
+          `${String(hour).padStart(2,"0")}:00–${String(hour).padStart(2,"0")}:59`;
+        timePicker.appendChild(option);
+      }
+      timePicker.value=selectedHour;
     }
 
     function runArcPulse(){
@@ -3345,36 +3466,52 @@
       return signal?.signalType==="CREATION" ? "CREATION" : "MUSIC";
     }
 
-    function reactToSignal(signal){
-      if(!signal) return;
-      const code=normalizeCountryCode(signal.countryCode);
-      const country=countryName(code);
-      if(pulseMessage) pulseMessage.firstChild.textContent="SIGNAL DETECTED. ";
-      if(pulseMessageSub) pulseMessageSub.textContent=`${country} / ${publicSignalKind(signal)} SIGNAL`;
-      if(worldPulseOverlay){
-        worldPulseOverlay.classList.remove("is-active");
-        void worldPulseOverlay.getBoundingClientRect();
-        worldPulseOverlay.classList.add("is-active");
-        window.setTimeout(()=>worldPulseOverlay.classList.remove("is-active"),2100);
-      }
-      if(!reducedMotion){
-        runArcPulse();
-        earthOrb?.animate([{filter:"brightness(1)"},{filter:"brightness(1.32)"},{filter:"brightness(1)"}],{duration:850,easing:"ease-out"});
-      }
-      ensureCountryOption(code);
-      selectCountry(code);
+    function signalHourJst(signal){
+      const date=new Date(signal?.worldPublishedAt||signal?.sourcePublishedAt||"");
+      if(Number.isNaN(date.getTime())) return null;
+      const hour=Number(
+        new Intl.DateTimeFormat("en-GB",{
+          timeZone:JST_TIME_ZONE,
+          hour:"2-digit",
+          hour12:false
+        }).format(date)
+      );
+      return Number.isFinite(hour) ? hour : null;
     }
 
-    function escapeHtml(value){ return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]||ch)); }
+    function signalTimeJst(signal){
+      const date=new Date(signal?.worldPublishedAt||signal?.sourcePublishedAt||"");
+      if(Number.isNaN(date.getTime())) return "--:--";
+      return jstClock.format(date);
+    }
+
+    function matchesSelectedHour(signal){
+      if(selectedHour==="ALL") return true;
+      const hour=signalHourJst(signal);
+      return hour===Number(selectedHour);
+    }
+
+    function selectedWindowLabel(){
+      if(selectedHour==="ALL") return "00:00–23:59 JST";
+      return `${selectedHour}:00–${selectedHour}:59 JST`;
+    }
+
+    function signalsInSelectedTime(){
+      return (state.recentSignals||[]).filter(matchesSelectedHour);
+    }
 
     function countryCount(code){
       const normalized=normalizeCountryCode(code);
-      return state.recentActivity?.find(item=>normalizeCountryCode(item.countryCode)===normalized)?.count ?? 0;
+      return signalsInSelectedTime().filter(
+        signal=>normalizeCountryCode(signal.countryCode)===normalized
+      ).length;
     }
 
     function signalsFor(code){
       const normalized=normalizeCountryCode(code);
-      return (state.recentSignals||[]).filter(signal=>normalizeCountryCode(signal.countryCode)===normalized);
+      return signalsInSelectedTime().filter(
+        signal=>normalizeCountryCode(signal.countryCode)===normalized
+      );
     }
 
     function renderNodeStates(){
@@ -3382,6 +3519,7 @@
         const code=normalizeCountryCode(node.dataset.country);
         const selected=code===selectedCountry;
         const hasSignal=countryCount(code)>0;
+
         node.classList.toggle("is-selected",selected);
         node.classList.toggle("has-signal",hasSignal);
         node.setAttribute("aria-pressed",String(selected));
@@ -3389,66 +3527,148 @@
       });
     }
 
+    function renderSignalList(signals){
+      if(!signalList) return;
+
+      signalList.replaceChildren();
+
+      if(!signals.length){
+        const empty=document.createElement("p");
+        empty.className="signal-empty";
+        empty.textContent="NO VERIFIED SIGNAL";
+        signalList.appendChild(empty);
+        return;
+      }
+
+      for(const signal of signals){
+        const row=document.createElement("p");
+        row.className="signal-event";
+
+        const meta=document.createElement("em");
+        meta.textContent=
+          `${signalTimeJst(signal)} · ${publicSignalKind(signal)}`;
+        row.appendChild(meta);
+
+        const title=document.createElement("a");
+        title.className="signal-title-link";
+        title.textContent=signal.displayTitle||"OPEN SOURCE";
+
+        if(signal.sourceUrl){
+          title.href=signal.sourceUrl;
+          title.target="_blank";
+          title.rel="noopener noreferrer";
+          title.setAttribute(
+            "aria-label",
+            `${signal.displayTitle||"YouTube video"} をYouTubeで開く`
+          );
+        }
+
+        row.appendChild(title);
+        signalList.appendChild(row);
+      }
+    }
+
     function selectCountry(code){
       selectedCountry=normalizeCountryCode(code);
       ensureCountryOption(selectedCountry);
       countryPicker.value=selectedCountry;
+
       renderNodeStates();
+
       const name=countryName(selectedCountry);
       const signals=signalsFor(selectedCountry);
-      panelCityCode.textContent=selectedCountry==="GLOBAL"?"GLOBAL SIGNAL":`COUNTRY SIGNAL / ${selectedCountry}`;
+
+      panelCityCode.textContent=
+        selectedCountry==="GLOBAL"
+          ? "GLOBAL SIGNAL"
+          : `COUNTRY SIGNAL / ${selectedCountry}`;
+
       panelCity.textContent=name;
-      panelStatus.innerHTML=selectedCountry==="GLOBAL"
-        ? `<strong>GLOBAL SIGNAL</strong><br>国を確定できないSIGNAL。`
-        : `<strong>VERIFIED SIGNALS ONLY.</strong><br>公開情報だけで国を表示。`;
-      metricSignals.textContent=String(countryCount(selectedCountry));
-      metricPulse.textContent=state.worldPulse==null?"--":String(state.worldPulse);
-      const targets=[eventOne,eventTwo,eventThree];
-      const typeTargets=[eventOneType,eventTwoType,eventThreeType];
 
-      for(let i=0;i<targets.length;i++){
-        const signal=signals[i];
-        const target=targets[i];
-        const typeTarget=typeTargets[i];
+      panelStatus.innerHTML=
+        selectedCountry==="GLOBAL"
+          ? `<strong>${selectedWindowLabel()}</strong><br>国を確定できないSIGNAL。`
+          : `<strong>${selectedWindowLabel()}</strong><br>本日の検証済みSIGNAL。`;
 
-        if(signal){
-          if(typeTarget) typeTarget.textContent=publicSignalKind(signal);
+      metricSignals.textContent=String(signals.length);
+      metricPulse.textContent=
+        state.worldPulse==null ? "--" : String(state.worldPulse);
 
-          // Show only the video/work title. MIKU_VOCAL and MIKU_RELATED_MUSIC
-          // remain internal classifications and are not displayed separately.
-          target.textContent=signal.displayTitle||"OPEN SOURCE";
+      if(signalFeedTitle){
+        signalFeedTitle.textContent=
+          selectedHour==="ALL"
+            ? "TODAY'S SIGNALS"
+            : `${selectedHour}:00–${selectedHour}:59 JST`;
+      }
 
-          if(signal.sourceUrl){
-            target.href=signal.sourceUrl;
-            target.target="_blank";
-            target.rel="noopener noreferrer";
-            target.setAttribute("aria-label",`${signal.displayTitle||"YouTube video"} をYouTubeで開く`);
-          } else {
-            target.removeAttribute("href");
-            target.removeAttribute("target");
-            target.removeAttribute("rel");
-            target.removeAttribute("aria-label");
-          }
-        } else {
-          if(typeTarget) typeTarget.textContent=i===0?"SIGNAL":"";
-          target.textContent=i===0?"LISTENING...":"NO VERIFIED SIGNAL";
-          target.removeAttribute("href");
-          target.removeAttribute("target");
-          target.removeAttribute("rel");
-          target.removeAttribute("aria-label");
-        }
+      renderSignalList(signals);
+    }
+
+    function selectTime(value){
+      selectedHour=value==="ALL" ? "ALL" : String(value).padStart(2,"0");
+      if(timePicker) timePicker.value=selectedHour;
+      selectCountry(selectedCountry);
+    }
+
+    function reactToSignal(signal){
+      if(!signal) return;
+
+      const code=normalizeCountryCode(signal.countryCode);
+      const country=countryName(code);
+
+      if(pulseMessage) pulseMessage.firstChild.textContent="SIGNAL DETECTED. ";
+      if(pulseMessageSub){
+        pulseMessageSub.textContent=
+          `${country} / ${publicSignalKind(signal)} SIGNAL`;
+      }
+
+      if(worldPulseOverlay){
+        worldPulseOverlay.classList.remove("is-active");
+        void worldPulseOverlay.getBoundingClientRect();
+        worldPulseOverlay.classList.add("is-active");
+        window.setTimeout(
+          ()=>worldPulseOverlay.classList.remove("is-active"),
+          2100
+        );
+      }
+
+      if(!reducedMotion){
+        runArcPulse();
+        earthOrb?.animate(
+          [
+            {filter:"brightness(1)"},
+            {filter:"brightness(1.32)"},
+            {filter:"brightness(1)"}
+          ],
+          {duration:850,easing:"ease-out"}
+        );
+      }
+
+      ensureCountryOption(code);
+
+      // New SIGNALs are visible in ALL DAY immediately.
+      // If the user is browsing a past hour, do not forcibly change their time selection.
+      if(selectedHour==="ALL"){
+        selectCountry(code);
+      }else{
+        selectCountry(selectedCountry);
       }
     }
 
     function setConnectionState(mode,sync=120){
-      if(mode==="LIVE") {
-        observerMode.innerHTML=`<span class="live-dot" aria-hidden="true"></span> LIVE OBSERVER / ${sync}s SYNC`;
+      if(mode==="LIVE"){
+        observerMode.innerHTML=
+          `<span class="live-dot" aria-hidden="true"></span> LIVE OBSERVER / ${sync}s SYNC`;
+
         if(connectionNote){
           connectionNote.dataset.mode="LIVE";
-          connectionNote.textContent="直近60分の検証済みSIGNAL。";
+          connectionNote.textContent=
+            "本日 00:00–23:59 JST の検証済みSIGNAL。30分ごとに観測。";
         }
-      } else {
-        observerMode.innerHTML='<span class="live-dot" aria-hidden="true"></span> OBSERVER OFFLINE';
+      }else{
+        observerMode.innerHTML=
+          '<span class="live-dot" aria-hidden="true"></span> OBSERVER OFFLINE';
+
         if(connectionNote){
           connectionNote.dataset.mode="OFFLINE";
           connectionNote.textContent="観測データを取得できません。";
@@ -3457,30 +3677,57 @@
     }
 
     function applySnapshot(snapshot){
-      if(!snapshot || Number(snapshot.schemaVersion)!==3 || snapshot.mode!=="LIVE") {
+      if(
+        !snapshot ||
+        Number(snapshot.schemaVersion)!==3 ||
+        snapshot.mode!=="LIVE"
+      ){
         throw new Error("Unsupported or non-LIVE MIKU OBSERVER snapshot");
       }
+
       const previousIds=knownSignalIds;
+
       state=snapshot;
       syncObservedCountries(snapshot);
-      knownSignalIds=new Set((snapshot.recentSignals||[]).map(signal=>signal.sourceItemId));
+
+      knownSignalIds=new Set(
+        (snapshot.recentSignals||[]).map(signal=>signal.sourceItemId)
+      );
+
       const sync=Math.max(60,Number(snapshot.syncSeconds||120));
       setConnectionState("LIVE",sync);
       selectCountry(selectedCountry);
+
       if(previousIds.size){
-        const newest=(snapshot.recentSignals||[]).find(signal=>!previousIds.has(signal.sourceItemId));
+        const newest=(snapshot.recentSignals||[]).find(
+          signal=>!previousIds.has(signal.sourceItemId)
+        );
         if(newest) reactToSignal(newest);
       }
     }
 
     async function loadSnapshot(){
-      const base=String(window.MIKU_WORLD_CONFIG.API_BASE||DEFAULT_API_BASE).replace(/\/$/,"");
+      const base=String(
+        window.MIKU_WORLD_CONFIG.API_BASE||DEFAULT_API_BASE
+      ).replace(/\/$/,"");
+
       try{
-        const response=await fetch(`${base}/v2/world/snapshot`,{headers:{Accept:"application/json"},cache:"no-store"});
+        const response=await fetch(
+          `${base}/v2/world/snapshot`,
+          {
+            headers:{Accept:"application/json"},
+            cache:"no-store"
+          }
+        );
+
         if(!response.ok) throw new Error(`HTTP ${response.status}`);
         applySnapshot(await response.json());
       }catch(error){
-        console.warn("MIKU OBSERVER snapshot unavailable; rendering no fabricated activity.",error);
+        console.warn(
+          "MIKU OBSERVER snapshot unavailable; rendering no fabricated activity.",
+          error
+        );
+
         state=safeSnapshot;
         knownSignalIds=new Set();
         setConnectionState("OFFLINE");
@@ -3488,16 +3735,25 @@
       }
     }
 
-    // Zero-cost-first mode intentionally avoids a paid realtime service.
-    // PAGE 2 polls the Cloudflare Worker snapshot and reacts only to newly verified SIGNALs.
-
+    // PAGE 2 polls the free Cloudflare Worker.
+    // The Worker snapshot now contains all verified SIGNALs from today's JST day.
     signalNodes.forEach(node=>{
       node.setAttribute("aria-pressed","false");
-      node.addEventListener("click",()=>selectCountry(node.dataset.country));
+      node.addEventListener(
+        "click",
+        ()=>selectCountry(node.dataset.country)
+      );
     });
 
-    // Keep the flat map stationary so its country anchors stay aligned.
-    countryPicker.addEventListener("change",()=>selectCountry(countryPicker.value));
+    countryPicker.addEventListener(
+      "change",
+      ()=>selectCountry(countryPicker.value)
+    );
+
+    timePicker?.addEventListener(
+      "change",
+      ()=>selectTime(timePicker.value)
+    );
 
     async function syncLoop(){
       await loadSnapshot();
@@ -3506,6 +3762,7 @@
       window.setTimeout(syncLoop,seconds*1000+jitter);
     }
 
+    buildTimePicker();
     selectCountry(selectedCountry);
     syncLoop();
   </script>
