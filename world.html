@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MIKU WORLD - THE WORLD prototype. 初音ミクを通して、世界の創作と人のつながりを体験する未来型インターフェース。">
+  <meta name="description" content="MIKU WORLD - THE PLACE MIKU SINGING. 初音ミクを通して、世界の創作と人のつながりを体験する未来型インターフェース。">
   <meta name="theme-color" content="#dbf8f7">
-  <title>THE WORLD | MIKU WORLD</title>
+  <title>THE PLACE MIKU SINGING | MIKU WORLD</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2953,41 +2953,45 @@
   </style>
 
 
-  <style id="white-aqua-text-pass">
-    /* Water-blue typography -> white.
-       Aqua remains in lines, dots, borders and UI accents. */
+  <style id="miku-heading-text-colors">
+    /* Keep the hero white and pink; use black for the other formerly white text. */
     .world-title,
     .world-title span:first-child,
-    .world-title .accent,
+    .world-title .accent {
+      color: #fff;
+      -webkit-text-stroke: 0;
+      text-shadow: 0 1px 2px rgba(15,66,78,.28), 0 4px 18px rgba(6,126,148,.20);
+    }
+    .world-title span:first-child {
+      font-size: .26em;
+      margin-bottom: .45em;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .world-title span:last-child,
+    .story-title .outline {
+      color: var(--miku-pink);
+      text-shadow: none;
+    }
     .panel-city,
     .metric-value,
     .metric:nth-child(2) .metric-value,
     .story-title,
-    .story-step h3,
     .next-page strong,
     .pulse-message,
-    .boot-title {
-      color: #ffffff !important;
-      -webkit-text-stroke: 0 !important;
-      text-shadow:
-        0 1px 2px rgba(15, 66, 78, .28),
-        0 4px 18px rgba(6, 126, 148, .20) !important;
-    }
-
-    /* Keep the intentional pink contrast. */
-    .world-title span:last-child,
-    .story-title .outline {
-      color: var(--miku-pink) !important;
-      text-shadow: none !important;
-    }
-
-    /* Small cyan-ish text labels also move to white, but stay quieter. */
+    .boot-title,
     .header-brand span,
-    .panel-city-code,
-    .hud-copy strong {
-      color: #ffffff !important;
-      text-shadow: 0 1px 5px rgba(15, 66, 78, .28);
+    .header-brand strong,
+    .panel-city-code {
+      color: #111;
+      -webkit-text-stroke: 0;
+      text-shadow: none;
     }
+    .signal-label { color: #111; background: #f4fafb; }
+    .world-boot {
+      background: radial-gradient(circle at 50% 50%, rgba(20,183,199,.12), transparent 50%), #eefafa;
+    }
+    .boot-status { color: #111; }
   </style>
 
 
@@ -3101,6 +3105,207 @@
     }
   </style>
 
+  <style id="place-heading-cleanup">
+    .world-stage { grid-template-columns: minmax(0, 1fr) 318px; }
+    .world-intro {
+      inset: auto;
+      width: 100%;
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 32px clamp(40px, 6vw, 96px);
+      padding-right: 0;
+    }
+    .world-title { grid-row: auto; align-self: center; }
+    .world-title span:last-child { white-space: nowrap; }
+    .world-intro-copy { margin: 0; align-self: center; }
+    .world-intro-copy strong { margin: 0; }
+    .orb-zone, .signal-panel { width: 100%; min-width: 0; }
+    .metric-label { line-height: 1.5; }
+    @media (max-width: 1080px) and (min-width: 861px) {
+      .world-stage { grid-template-columns: minmax(0, 1fr) 280px; }
+      .world-title { font-size: clamp(64px, 8vw, 86px); }
+    }
+    @media (max-width: 860px) {
+      .world-stage { padding-top: calc(var(--header-h) + 36px); }
+      .world-intro { min-height: 0; }
+      .world-intro-copy { margin-top: 32px; }
+    }
+    @media (max-width: 560px) {
+      .world-title { font-size: clamp(58px, 18vw, 96px); }
+    }
+  </style>
+
+  <style id="mobile-signal-reading">
+    .signal-feed { display: block; min-width: 0; }
+    .signal-event .signal-title-link {
+      display: block;
+      -webkit-line-clamp: unset;
+      overflow: visible;
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 860px) {
+      .signal-list {
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+      .daily-time-controls .map-country-select {
+        flex: 1;
+        width: auto;
+        font-size: 13px;
+        padding-inline: 12px;
+      }
+      .signal-event { line-height: 1.65; }
+    }
+  </style>
+
+  <style id="opening-and-next-cleanup">
+    .boot-title {
+      position: relative;
+      top: -20px;
+    }
+
+    .next-page {
+      border-top: none !important;
+    }
+  </style>
+
+
+  <style id="country-time-alignment-pass">
+    .map-controls,
+    .daily-time-controls {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) 260px !important;
+      align-items: center !important;
+      column-gap: 22px !important;
+      width: 100% !important;
+    }
+
+    .map-controls .map-country-select,
+    .daily-time-controls .map-country-select {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      justify-self: end !important;
+    }
+
+    .map-controls label,
+    .daily-time-controls label {
+      justify-self: start;
+    }
+
+    @media (max-width: 700px) {
+      .map-controls,
+      .daily-time-controls {
+        grid-template-columns: minmax(0, 1fr) minmax(180px, 58vw) !important;
+      }
+
+      .map-controls .map-country-select,
+      .daily-time-controls .map-country-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+      }
+    }
+  </style>
+
+
+  <style id="country-time-right-alignment-final">
+    .map-controls,
+    .daily-time-controls {
+      grid-template-columns: minmax(0, 1fr) 260px !important;
+      width: 100% !important;
+    }
+
+    .map-controls .map-country-select,
+    .daily-time-controls .map-country-select {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      justify-self: end !important;
+      margin-left: auto !important;
+      text-align: right !important;
+      text-align-last: right !important;
+      padding-right: 34px !important;
+    }
+
+    .map-controls option,
+    .daily-time-controls option {
+      text-align: right;
+    }
+
+    @media (max-width: 700px) {
+      .map-controls .map-country-select,
+      .daily-time-controls .map-country-select {
+        width: min(260px, 58vw) !important;
+        min-width: 0 !important;
+        max-width: 260px !important;
+      }
+    }
+  </style>
+
+
+  <style id="select-compact-left-options">
+    .map-controls,
+    .daily-time-controls {
+      grid-template-columns: minmax(0, 1fr) 220px !important;
+      width: 100% !important;
+    }
+
+    .map-controls .map-country-select,
+    .daily-time-controls .map-country-select {
+      width: 220px !important;
+      min-width: 220px !important;
+      max-width: 220px !important;
+      justify-self: end !important;
+      margin-left: auto !important;
+
+      /* Selected country / selected time stays right-aligned. */
+      text-align: right !important;
+      text-align-last: right !important;
+      padding-right: 32px !important;
+    }
+
+    /* The opened dropdown menu itself is left-aligned. */
+    .map-controls .map-country-select option,
+    .daily-time-controls .map-country-select option {
+      direction: ltr !important;
+      text-align: left !important;
+    }
+
+    @media (max-width: 700px) {
+      .map-controls,
+      .daily-time-controls {
+        grid-template-columns: minmax(0, 1fr) minmax(170px, 52vw) !important;
+      }
+
+      .map-controls .map-country-select,
+      .daily-time-controls .map-country-select {
+        width: min(220px, 52vw) !important;
+        min-width: 0 !important;
+        max-width: 220px !important;
+      }
+    }
+  </style>
+
+
+  <style id="select-centered-values-final">
+    .map-controls .map-country-select,
+    .daily-time-controls .map-country-select {
+      text-align: center !important;
+      text-align-last: center !important;
+      padding-right: 32px !important;
+      padding-left: 32px !important;
+    }
+
+    .map-controls .map-country-select option,
+    .daily-time-controls .map-country-select option {
+      text-align: left !important;
+      direction: ltr !important;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -3114,8 +3319,7 @@
       <span class="boot-ring r3"></span>
       <span class="boot-core"></span>
       <div class="boot-copy">
-        <p class="boot-kicker">MIKU WORLD / SECTOR 02</p>
-        <p class="boot-title">MIKU WORLD ONLINE</p>
+        <p class="boot-title">MIKU WORLD</p>
         <p class="boot-status">LISTENING TO THE PLANET...</p>
       </div>
     </div>
@@ -3145,13 +3349,11 @@
   <main>
     <section class="world-stage" aria-labelledby="worldTitle">
       <div class="world-intro">
-        <p class="eyebrow">OBSERVATION LAYER / PAGE 02</p>
         <h1 class="world-title" id="worldTitle">
-          <span>THE</span>
-          <span class="accent">WORLD</span>
-          <span>IS SINGING.</span>
+          <span>THE PLACE</span>
+          <span class="accent">MIKU</span>
+          <span>SINGING</span>
         </h1>
-        <div class="demo-note" id="connectionNote" data-mode="CONNECTING">本日 00:00–23:59 JST の検証済みSIGNAL。30分ごとに更新。</div>
       </div>
 
       <div class="orb-zone" id="orbZone" aria-label="インタラクティブなMIKU WORLD世界地図">
@@ -3207,13 +3409,14 @@
             <option value="DE">GERMANY / DE</option>
             <option value="AU">AUSTRALIA / AU</option>
             <option value="KR">SOUTH KOREA / KR</option>
-            <option value="GLOBAL">GLOBAL</option>
+            <option value="GLOBAL">UNKNOWN</option>
+            <option value="ALL">ALL COUNTRIES</option>
           </select>
         </div>
         <div class="daily-time-controls">
           <label for="timePicker">TIME / JST</label>
           <select class="map-country-select" id="timePicker" aria-label="表示する時間帯を選択">
-            <option value="ALL">TODAY / 00:00–23:59</option>
+            <option value="ALL">ALL DAY</option>
           </select>
         </div>
       </div>
@@ -3248,22 +3451,11 @@
         </div>
       </aside>
 
-      <div class="bottom-hud">
-        <div class="hud-copy">
-          <strong>OBSERVER MODE / READ ONLY</strong>
-          NO LOGIN / NO UPLOAD / NO GPS<br>
-          COUNTRY OR GLOBAL ONLY
-        </div>
-      </div>
-      <a class="visual-source-credit" href="https://science.nasa.gov/resource/earth-at-night/" target="_blank" rel="noopener noreferrer" aria-label="背景ビジュアル参照元 NASA Earth at Night">
-        VISUAL SOURCE / EARTH AT NIGHT · NASA / NOAA
-      </a>
     </section>
 
     <section class="world-story" aria-labelledby="storyTitle">
       <div class="story-grid">
         <div>
-          <span class="story-number">WORLD PRINCIPLE / 001</span>
           <h2 class="story-title" id="storyTitle">
             ONE VOICE.
             <span class="outline">MILLIONS OF HANDS.</span>
@@ -3275,35 +3467,7 @@
           <strong>MIKU WORLDは、その動きをSIGNALとして観測する。</strong>
         </div>
       </div>
-
-      <div class="story-steps" aria-label="MIKU WORLD cycle">
-        <article class="story-step">
-          <span class="story-step-index">01 / RECEIVE</span>
-          <h3>FIND A SIGNAL</h3>
-          <p>世界のどこかから届く音楽、絵、映像、言葉、コード。まずは偶然に出会う。</p>
-        </article>
-
-        <article class="story-step">
-          <span class="story-step-index">02 / RESONATE</span>
-          <h3>FEEL THE ECHO</h3>
-          <p>誰かの創作が、自分の中で別の意味になる。国や言語を越えて「好き」が共鳴する。</p>
-        </article>
-
-        <article class="story-step">
-          <span class="story-step-index">03 / CREATE</span>
-          <h3>SEND IT FORWARD</h3>
-          <p>聴くだけでもいい。作ってもいい。伝えてもいい。次の波紋が別の誰かへ届く。</p>
-        </article>
-      </div>
-
-      <div class="next-page">
-        <div>
-          <small>NEXT WORLD / PAGE 03</small>
-          <strong>MUSIC — ENTER THE CONSTELLATION</strong>
-        </div>
-        <a class="next-page-button" href="#" aria-label="PAGE 03 MUSIC prototype not yet connected" onclick="event.preventDefault(); alert('PAGE 03 / MUSIC は次のプロトタイプです。');">→</a>
-      </div>
-    </section>
+</section>
   </main>
 
   <div class="world-pulse-overlay" id="worldPulseOverlay" aria-hidden="true">
@@ -3341,7 +3505,7 @@
       GB:"UNITED KINGDOM", FR:"FRANCE", DE:"GERMANY", AU:"AUSTRALIA", KR:"SOUTH KOREA",
       SG:"SINGAPORE", PH:"PHILIPPINES", CL:"CHILE", CO:"COLOMBIA",
       TH:"THAILAND",
-      GLOBAL:"GLOBAL"
+      GLOBAL:"UNKNOWN", ALL:"ALL COUNTRIES"
     };
 
     const regionNames = typeof Intl.DisplayNames === "function"
@@ -3370,7 +3534,6 @@
     const orbZone=document.getElementById("orbZone");
     const pulseArc=document.getElementById("pulseArc");
     const observerMode=document.getElementById("observerMode");
-    const connectionNote=document.getElementById("connectionNote");
     const panelCityCode=document.getElementById("panelCityCode");
     const panelCity=document.getElementById("panelCity");
     const metricSignals=document.getElementById("metricSignals");
@@ -3399,6 +3562,7 @@
 
     function normalizeCountryCode(value){
       const code=String(value||"GLOBAL").trim().toUpperCase();
+      if(code==="ALL") return "ALL";
       return /^[A-Z]{2}$/.test(code)||code==="GLOBAL" ? code : "GLOBAL";
     }
 
@@ -3416,6 +3580,7 @@
 
     function ensureCountryOption(code){
       const normalized=normalizeCountryCode(code);
+      if(normalized==="ALL") return;
       if([...countryPicker.options].some(option=>option.value===normalized)) return;
 
       const option=document.createElement("option");
@@ -3434,15 +3599,28 @@
       codes.forEach(ensureCountryOption);
     }
 
+    function formatSlotTime(totalMinutes){
+      const minutes=Math.max(0,Math.min(1439,Number(totalMinutes)||0));
+      const hour=Math.floor(minutes/60);
+      const minute=minutes%60;
+      return `${hour}:${String(minute).padStart(2,"0")}`;
+    }
+
+    function formatHourBand(hourValue){
+      const hour=Math.max(0,Math.min(23,Number(hourValue)||0));
+      return `${hour}:00 / ${hour}:30`;
+    }
+
     function buildTimePicker(){
       if(!timePicker) return;
+
       for(let hour=0; hour<24; hour++){
         const option=document.createElement("option");
-        option.value=String(hour).padStart(2,"0");
-        option.textContent=
-          `${String(hour).padStart(2,"0")}:00–${String(hour).padStart(2,"0")}:59`;
+        option.value=String(hour);
+        option.textContent=formatHourBand(hour);
         timePicker.appendChild(option);
       }
+
       timePicker.value=selectedHour;
     }
 
@@ -3476,15 +3654,28 @@
       return jstClock.format(date);
     }
 
+    function signalMinuteOfDayJst(signal){
+      const date=new Date(signal?.worldPublishedAt||signal?.sourcePublishedAt||"");
+      if(Number.isNaN(date.getTime())) return null;
+
+      // JST is UTC+9 and does not use daylight saving time.
+      const shifted=new Date(date.getTime() + 9*60*60*1000);
+      return shifted.getUTCHours()*60 + shifted.getUTCMinutes();
+    }
+
     function matchesSelectedHour(signal){
       if(selectedHour==="ALL") return true;
-      const hour=signalHourJst(signal);
+
+      const minuteOfDay=signalMinuteOfDayJst(signal);
+      if(minuteOfDay==null) return false;
+
+      const hour=Math.floor(minuteOfDay/60);
       return hour===Number(selectedHour);
     }
 
     function selectedWindowLabel(){
-      if(selectedHour==="ALL") return "00:00–23:59 JST";
-      return `${selectedHour}:00–${selectedHour}:59 JST`;
+      if(selectedHour==="ALL") return "ALL DAY";
+      return `${formatHourBand(selectedHour)} JST`;
     }
 
     function signalsInSelectedTime(){
@@ -3493,14 +3684,26 @@
 
     function countryCount(code){
       const normalized=normalizeCountryCode(code);
-      return signalsInSelectedTime().filter(
+      const signals=signalsInSelectedTime();
+
+      // ALL COUNTRIES is the combined summary of every verified signal.
+      if(normalized==="ALL") return signals.length;
+
+      // GLOBAL from the backend means the country is unknown.
+      return signals.filter(
         signal=>normalizeCountryCode(signal.countryCode)===normalized
       ).length;
     }
 
     function signalsFor(code){
       const normalized=normalizeCountryCode(code);
-      return signalsInSelectedTime().filter(
+      const signals=signalsInSelectedTime();
+
+      // ALL COUNTRIES shows all verified signals together.
+      if(normalized==="ALL") return signals;
+
+      // GLOBAL from the backend is displayed as UNKNOWN.
+      return signals.filter(
         signal=>normalizeCountryCode(signal.countryCode)===normalized
       );
     }
@@ -3537,7 +3740,7 @@
 
         const meta=document.createElement("em");
         meta.textContent=
-          `${signalTimeJst(signal)} · ${publicSignalKind(signal)}`;
+          `${signalTimeJst(signal)} · ${countryName(normalizeCountryCode(signal.countryCode))}`;
         row.appendChild(meta);
 
         const title=document.createElement("a");
@@ -3570,9 +3773,11 @@
       const signals=signalsFor(selectedCountry);
 
       panelCityCode.textContent=
-        selectedCountry==="GLOBAL"
-          ? "GLOBAL SIGNAL"
-          : `COUNTRY SIGNAL / ${selectedCountry}`;
+        selectedCountry==="ALL"
+          ? "ALL COUNTRIES"
+          : selectedCountry==="GLOBAL"
+            ? "COUNTRY SIGNAL / UNKNOWN"
+            : `COUNTRY SIGNAL / ${selectedCountry}`;
 
       panelCity.textContent=name;
 
@@ -3583,15 +3788,15 @@
       if(signalFeedTitle){
         signalFeedTitle.textContent=
           selectedHour==="ALL"
-            ? "TODAY'S SIGNALS"
-            : `${selectedHour}:00–${selectedHour}:59 JST`;
+            ? "ALL DAY SIGNALS"
+            : `${formatHourBand(selectedHour)} JST`;
       }
 
       renderSignalList(signals);
     }
 
     function selectTime(value){
-      selectedHour=value==="ALL" ? "ALL" : String(value).padStart(2,"0");
+      selectedHour=value==="ALL" ? "ALL" : String(Math.max(0,Math.min(23,Number(value))));
       if(timePicker) timePicker.value=selectedHour;
       selectCountry(selectedCountry);
     }
@@ -3633,7 +3838,7 @@
       ensureCountryOption(code);
 
       // New SIGNALs are visible in ALL DAY immediately.
-      // If the user is browsing a past hour, do not forcibly change their time selection.
+      // If the user is browsing a past hourly band, do not forcibly change their time selection.
       if(selectedHour==="ALL"){
         selectCountry(code);
       }else{
@@ -3646,19 +3851,10 @@
         observerMode.innerHTML=
           `<span class="live-dot" aria-hidden="true"></span> LIVE OBSERVER / ${sync}s SYNC`;
 
-        if(connectionNote){
-          connectionNote.dataset.mode="LIVE";
-          connectionNote.textContent=
-            "本日 00:00–23:59 JST の検証済みSIGNAL。30分ごとに観測。";
-        }
       }else{
         observerMode.innerHTML=
           '<span class="live-dot" aria-hidden="true"></span> OBSERVER OFFLINE';
 
-        if(connectionNote){
-          connectionNote.dataset.mode="OFFLINE";
-          connectionNote.textContent="観測データを取得できません。";
-        }
       }
     }
 
