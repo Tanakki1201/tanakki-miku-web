@@ -3151,10 +3151,6 @@
           <span class="accent">WORLD</span>
           <span>IS SINGING.</span>
         </h1>
-        <p class="world-intro-copy">
-          <strong>世界で生まれた、検証済みのミク文化だけを観測する。</strong>
-          <span>直近60分。推測しない。見つけたSIGNALだけを表示する。</span>
-        </p>
         <div class="demo-note" id="connectionNote" data-mode="CONNECTING">本日 00:00–23:59 JST の検証済みSIGNAL。30分ごとに更新。</div>
       </div>
 
@@ -3230,10 +3226,6 @@
 
         <p class="panel-city-code" id="panelCityCode">COUNTRY SIGNAL / JP</p>
         <h2 class="panel-city" id="panelCity">JAPAN</h2>
-        <p class="panel-status" id="panelStatus">
-          <strong>VERIFIED SIGNALS ONLY.</strong><br>
-          公開情報だけを観測します。
-        </p>
 
         <div class="panel-rule" aria-hidden="true"></div>
 
@@ -3381,7 +3373,6 @@
     const connectionNote=document.getElementById("connectionNote");
     const panelCityCode=document.getElementById("panelCityCode");
     const panelCity=document.getElementById("panelCity");
-    const panelStatus=document.getElementById("panelStatus");
     const metricSignals=document.getElementById("metricSignals");
     const metricPulse=document.getElementById("metricPulse");
     const signalFeedTitle=document.getElementById("signalFeedTitle");
@@ -3584,11 +3575,6 @@
           : `COUNTRY SIGNAL / ${selectedCountry}`;
 
       panelCity.textContent=name;
-
-      panelStatus.innerHTML=
-        selectedCountry==="GLOBAL"
-          ? `<strong>${selectedWindowLabel()}</strong><br>国を確定できないSIGNAL。`
-          : `<strong>${selectedWindowLabel()}</strong><br>本日の検証済みSIGNAL。`;
 
       metricSignals.textContent=String(signals.length);
       metricPulse.textContent=
