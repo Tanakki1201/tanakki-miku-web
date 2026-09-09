@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MIKU WORLD - THE PLACE MIKU SINGING. 初音ミクを通して、世界の創作と人のつながりを体験する未来型インターフェース。">
+  <meta name="description" content="MIKU WORLD - THE WORLD prototype. 初音ミクを通して、世界の創作と人のつながりを体験する未来型インターフェース。">
   <meta name="theme-color" content="#dbf8f7">
-  <title>THE PLACE MIKU SINGING | MIKU WORLD</title>
+  <title>THE WORLD | MIKU WORLD</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2744,7 +2744,7 @@
       font-size: 10px;
     }
 
-    .signal-event span {
+    .signal-event .signal-title-link {
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -2991,37 +2991,38 @@
   </style>
 
 
-  <style id="place-heading-cleanup">
-    .world-stage { grid-template-columns: minmax(0, 1fr) 318px; }
-    .world-intro {
-      inset: auto;
-      width: 100%;
-      min-height: 240px;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: center;
-      gap: 32px clamp(40px, 6vw, 96px);
-      padding-right: 0;
+  <style id="signal-title-link-pass">
+    /* Public UI merges MIKU_VOCAL + MIKU_RELATED_MUSIC into one MUSIC category. */
+    .signal-event .signal-title-link {
+      display: -webkit-box;
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color .16s ease, text-decoration-color .16s ease;
     }
-    .world-title { grid-row: auto; align-self: center; }
-    .world-title span:last-child { white-space: nowrap; }
-    .world-intro-copy { margin: 0; align-self: center; }
-    .world-intro-copy strong { margin: 0; }
-    .orb-zone, .signal-panel { width: 100%; min-width: 0; }
-    .metric-label { line-height: 1.5; }
-    .metric-label::after { content: none; }
-    @media (max-width: 1080px) and (min-width: 861px) {
-      .world-stage { grid-template-columns: minmax(0, 1fr) 280px; }
-      .world-title { font-size: clamp(64px, 8vw, 86px); }
+
+    .signal-event .signal-title-link[href]:hover {
+      color: var(--miku-pink);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
     }
-    @media (max-width: 860px) {
-      .world-stage { padding-top: calc(var(--header-h) + 36px); }
-      .world-intro { min-height: 0; }
-      .world-intro-copy { margin-top: 32px; }
+
+    .signal-event .signal-title-link[href]:focus-visible {
+      outline: 2px solid var(--miku-pink);
+      outline-offset: 4px;
+      border-radius: 2px;
     }
-    @media (max-width: 560px) {
-      .world-title { font-size: clamp(58px, 18vw, 96px); }
+
+    /* The small category is now only MUSIC or CREATION. */
+    .signal-event em {
+      font-style: normal;
     }
   </style>
+
 </head>
 
 <body>
@@ -3066,14 +3067,17 @@
   <main>
     <section class="world-stage" aria-labelledby="worldTitle">
       <div class="world-intro">
+        <p class="eyebrow">OBSERVATION LAYER / PAGE 02</p>
         <h1 class="world-title" id="worldTitle">
           <span>THE</span>
-          <span class="accent">PLACE</span>
-          <span>MIKU SINGING</span>
+          <span class="accent">WORLD</span>
+          <span>IS SINGING.</span>
         </h1>
         <p class="world-intro-copy">
           <strong>世界で生まれた、検証済みのミク文化だけを観測する。</strong>
+          <span>直近60分。推測しない。見つけたSIGNALだけを表示する。</span>
         </p>
+        <div class="demo-note" id="connectionNote" data-mode="CONNECTING">直近60分の検証済みSIGNAL。</div>
       </div>
 
       <div class="orb-zone" id="orbZone" aria-label="インタラクティブなMIKU WORLD世界地図">
@@ -3142,31 +3146,48 @@
 
         <p class="panel-city-code" id="panelCityCode">COUNTRY SIGNAL / JP</p>
         <h2 class="panel-city" id="panelCity">JAPAN</h2>
+        <p class="panel-status" id="panelStatus">
+          <strong>VERIFIED SIGNALS ONLY.</strong><br>
+          公開情報だけを観測します。
+        </p>
 
         <div class="panel-rule" aria-hidden="true"></div>
 
         <div class="panel-metrics">
           <div class="metric">
-            <span class="metric-label" title="この国について直近60分に観測された検証済みSIGNAL件数">SIGNALS / 60 MIN</span>
+            <span class="metric-label" title="この国について直近60分に観測された検証済みSIGNAL件数">SIGNALS</span>
             <span class="metric-value" id="metricSignals">0</span>
           </div>
           <div class="metric">
-            <span class="metric-label" title="直近60分の全世界の検証済みSIGNAL総数。1 SIGNAL = 1 PULSE">WORLD PULSE / 60 MIN</span>
+            <span class="metric-label" title="直近60分の全世界の検証済みSIGNAL総数。1 SIGNAL = 1 PULSE">WORLD PULSE</span>
             <span class="metric-value" id="metricPulse">--</span>
           </div>
         </div>
 
         <div class="signal-feed" id="signalFeed">
           <p class="signal-feed-title">LATEST SIGNAL</p>
-          <p class="signal-event"><em>SIGNAL</em><span id="eventOne">LISTENING...</span></p>
+          <p class="signal-event"><em id="eventOneType">MUSIC</em><a id="eventOne" class="signal-title-link">LISTENING...</a></p>
+          <p class="signal-event"><em id="eventTwoType">MUSIC</em><a id="eventTwo" class="signal-title-link">WAITING...</a></p>
+          <p class="signal-event"><em id="eventThreeType">MUSIC</em><a id="eventThree" class="signal-title-link">GLOBAL IF UNKNOWN.</a></p>
         </div>
       </aside>
 
+      <div class="bottom-hud">
+        <div class="hud-copy">
+          <strong>OBSERVER MODE / READ ONLY</strong>
+          NO LOGIN / NO UPLOAD / NO GPS<br>
+          COUNTRY OR GLOBAL ONLY
+        </div>
+      </div>
+      <a class="visual-source-credit" href="https://science.nasa.gov/resource/earth-at-night/" target="_blank" rel="noopener noreferrer" aria-label="背景ビジュアル参照元 NASA Earth at Night">
+        VISUAL SOURCE / EARTH AT NIGHT · NASA / NOAA
+      </a>
     </section>
 
     <section class="world-story" aria-labelledby="storyTitle">
       <div class="story-grid">
         <div>
+          <span class="story-number">WORLD PRINCIPLE / 001</span>
           <h2 class="story-title" id="storyTitle">
             ONE VOICE.
             <span class="outline">MILLIONS OF HANDS.</span>
@@ -3179,6 +3200,25 @@
         </div>
       </div>
 
+      <div class="story-steps" aria-label="MIKU WORLD cycle">
+        <article class="story-step">
+          <span class="story-step-index">01 / RECEIVE</span>
+          <h3>FIND A SIGNAL</h3>
+          <p>世界のどこかから届く音楽、絵、映像、言葉、コード。まずは偶然に出会う。</p>
+        </article>
+
+        <article class="story-step">
+          <span class="story-step-index">02 / RESONATE</span>
+          <h3>FEEL THE ECHO</h3>
+          <p>誰かの創作が、自分の中で別の意味になる。国や言語を越えて「好き」が共鳴する。</p>
+        </article>
+
+        <article class="story-step">
+          <span class="story-step-index">03 / CREATE</span>
+          <h3>SEND IT FORWARD</h3>
+          <p>聴くだけでもいい。作ってもいい。伝えてもいい。次の波紋が別の誰かへ届く。</p>
+        </article>
+      </div>
 
       <div class="next-page">
         <div>
@@ -3236,11 +3276,18 @@
     const orbZone=document.getElementById("orbZone");
     const pulseArc=document.getElementById("pulseArc");
     const observerMode=document.getElementById("observerMode");
+    const connectionNote=document.getElementById("connectionNote");
     const panelCityCode=document.getElementById("panelCityCode");
     const panelCity=document.getElementById("panelCity");
+    const panelStatus=document.getElementById("panelStatus");
     const metricSignals=document.getElementById("metricSignals");
     const metricPulse=document.getElementById("metricPulse");
     const eventOne=document.getElementById("eventOne");
+    const eventOneType=document.getElementById("eventOneType");
+    const eventTwo=document.getElementById("eventTwo");
+    const eventTwoType=document.getElementById("eventTwoType");
+    const eventThree=document.getElementById("eventThree");
+    const eventThreeType=document.getElementById("eventThreeType");
     const worldPulseOverlay=document.getElementById("worldPulseOverlay");
     const pulseMessage=document.getElementById("pulseMessage");
     const pulseMessageSub=document.getElementById("pulseMessageSub");
@@ -3294,12 +3341,16 @@
       pulseArc.classList.add("is-running");
     }
 
+    function publicSignalKind(signal){
+      return signal?.signalType==="CREATION" ? "CREATION" : "MUSIC";
+    }
+
     function reactToSignal(signal){
       if(!signal) return;
       const code=normalizeCountryCode(signal.countryCode);
       const country=countryName(code);
       if(pulseMessage) pulseMessage.firstChild.textContent="SIGNAL DETECTED. ";
-      if(pulseMessageSub) pulseMessageSub.textContent=`${country} / ${signal.displayLabel||"VERIFIED PUBLIC ACTIVITY"}`;
+      if(pulseMessageSub) pulseMessageSub.textContent=`${country} / ${publicSignalKind(signal)} SIGNAL`;
       if(worldPulseOverlay){
         worldPulseOverlay.classList.remove("is-active");
         void worldPulseOverlay.getBoundingClientRect();
@@ -3313,6 +3364,8 @@
       ensureCountryOption(code);
       selectCountry(code);
     }
+
+    function escapeHtml(value){ return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]||ch)); }
 
     function countryCount(code){
       const normalized=normalizeCountryCode(code);
@@ -3345,22 +3398,61 @@
       const signals=signalsFor(selectedCountry);
       panelCityCode.textContent=selectedCountry==="GLOBAL"?"GLOBAL SIGNAL":`COUNTRY SIGNAL / ${selectedCountry}`;
       panelCity.textContent=name;
-      panelCityCode.title=selectedCountry==="GLOBAL"
-        ? "国を確定できないSIGNAL。"
-        : "公開情報で国が確認されたSIGNAL。";
+      panelStatus.innerHTML=selectedCountry==="GLOBAL"
+        ? `<strong>GLOBAL SIGNAL</strong><br>国を確定できないSIGNAL。`
+        : `<strong>VERIFIED SIGNALS ONLY.</strong><br>公開情報だけで国を表示。`;
       metricSignals.textContent=String(countryCount(selectedCountry));
       metricPulse.textContent=state.worldPulse==null?"--":String(state.worldPulse);
-      const signal=signals[0];
-      eventOne.textContent=signal
-        ? `${signal.displayLabel}: ${signal.displayTitle}`
-        : "LISTENING...";
+      const targets=[eventOne,eventTwo,eventThree];
+      const typeTargets=[eventOneType,eventTwoType,eventThreeType];
+
+      for(let i=0;i<targets.length;i++){
+        const signal=signals[i];
+        const target=targets[i];
+        const typeTarget=typeTargets[i];
+
+        if(signal){
+          if(typeTarget) typeTarget.textContent=publicSignalKind(signal);
+
+          // Show only the video/work title. MIKU_VOCAL and MIKU_RELATED_MUSIC
+          // remain internal classifications and are not displayed separately.
+          target.textContent=signal.displayTitle||"OPEN SOURCE";
+
+          if(signal.sourceUrl){
+            target.href=signal.sourceUrl;
+            target.target="_blank";
+            target.rel="noopener noreferrer";
+            target.setAttribute("aria-label",`${signal.displayTitle||"YouTube video"} をYouTubeで開く`);
+          } else {
+            target.removeAttribute("href");
+            target.removeAttribute("target");
+            target.removeAttribute("rel");
+            target.removeAttribute("aria-label");
+          }
+        } else {
+          if(typeTarget) typeTarget.textContent=i===0?"SIGNAL":"";
+          target.textContent=i===0?"LISTENING...":"NO VERIFIED SIGNAL";
+          target.removeAttribute("href");
+          target.removeAttribute("target");
+          target.removeAttribute("rel");
+          target.removeAttribute("aria-label");
+        }
+      }
     }
 
     function setConnectionState(mode,sync=120){
       if(mode==="LIVE") {
         observerMode.innerHTML=`<span class="live-dot" aria-hidden="true"></span> LIVE OBSERVER / ${sync}s SYNC`;
+        if(connectionNote){
+          connectionNote.dataset.mode="LIVE";
+          connectionNote.textContent="直近60分の検証済みSIGNAL。";
+        }
       } else {
         observerMode.innerHTML='<span class="live-dot" aria-hidden="true"></span> OBSERVER OFFLINE';
+        if(connectionNote){
+          connectionNote.dataset.mode="OFFLINE";
+          connectionNote.textContent="観測データを取得できません。";
+        }
       }
     }
 
