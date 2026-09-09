@@ -3306,6 +3306,49 @@
     }
   </style>
 
+
+  <style id="country-point-calibration">
+    /*
+      Country anchors calibrated to MIKU_WORLD_MAP.png.
+      These are visual map anchors (not user geolocation).
+    */
+    .signal-node[data-country="JP"] { left: calc(42.46% + 7px) !important; top: 36.98% !important; }
+    .signal-node[data-country="KR"] { left: calc(39.53% + 11px) !important; top: calc(36.66% + 1px) !important; }
+    .signal-node[data-country="CN"] { left: calc(32.78% + 5px) !important; top: calc(36.13% + 5px) !important; }
+    .signal-node[data-country="ID"] { left: calc(39.47% - 3px) !important; top: calc(57.92% + 15px) !important; }
+    .signal-node[data-country="US"] { left: calc(70.57% + 10px) !important; top: calc(35.07% - 2px) !important; }
+    .signal-node[data-country="MX"] { left: 69.68% !important; top: 48.35% !important; }
+    .signal-node[data-country="GB"] { left: 6.46% !important; top: 27.95% !important; }
+    .signal-node[data-country="FR"] { left: 8.08% !important; top: 32.41% !important; }
+    .signal-node[data-country="DE"] { left: 9.87% !important; top: 30.82% !important; }
+    .signal-node[data-country="AU"] { left: 43.66% !important; top: 73.33% !important; }
+
+    /* Slightly clearer selected anchor on the pastel map. */
+    .signal-node.is-selected::before {
+      width: 8px !important;
+      height: 8px !important;
+      background: #ffffff !important;
+      box-shadow:
+        0 0 0 2px rgba(207,74,139,.75),
+        0 0 0 6px rgba(207,74,139,.16),
+        0 0 18px rgba(6,126,148,.45) !important;
+      opacity: 1 !important;
+    }
+
+    .signal-node.is-selected::after {
+      width: 22px !important;
+      height: 22px !important;
+      border-color: rgba(207,74,139,.82) !important;
+      opacity: 1;
+      animation: nodePulse 2.2s ease-out infinite !important;
+    }
+
+    /* ALL COUNTRIES keeps every anchor visible as a quiet reference. */
+    .signals.is-all-countries .signal-node::before {
+      opacity: .72;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -3373,13 +3416,13 @@
 
           <div class="arc-layer" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path class="arc-line" d="M 20 42.3 Q 52 12 84.3 42.5"></path>
-              <path class="arc-line magenta" d="M 84.3 42.5 Q 88 56 79.8 66.8"></path>
-              <path class="arc-line white" d="M 45.8 31.7 Q 64 19 81.3 39"></path>
-              <path class="arc-line" d="M 48 36.7 Q 61 29 74 40.5"></path>
-              <path class="arc-line magenta" d="M 19.8 51.3 Q 31 25 48 36.7"></path>
-              <path class="arc-line" d="M 83.4 78.3 Q 83 54 74 40.5"></path>
-              <path class="pulse-arc" id="pulseArc" d="M 84.3 42.5 Q 52 12 20 42.3"></path>
+              <path class="arc-line" d="M 70.57 35.07 Q 56 17 42.46 36.98"></path>
+              <path class="arc-line magenta" d="M 42.46 36.98 Q 45 49 39.47 57.92"></path>
+              <path class="arc-line white" d="M 6.46 27.95 Q 24 18 39.53 36.66"></path>
+              <path class="arc-line" d="M 8.08 32.41 Q 21 25 32.78 36.13"></path>
+              <path class="arc-line magenta" d="M 69.68 48.35 Q 40 12 8.08 32.41"></path>
+              <path class="arc-line" d="M 43.66 73.33 Q 39 53 32.78 36.13"></path>
+              <path class="pulse-arc" id="pulseArc" d="M 42.46 36.98 Q 56 17 70.57 35.07"></path>
             </svg>
           </div>
 
@@ -3540,6 +3583,7 @@
     const countryPicker=document.getElementById("countryPicker");
     const timePicker=document.getElementById("timePicker");
     const signalNodes=[...document.querySelectorAll(".signal-node")];
+    const signalsLayer=document.querySelector(".signals");
     const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let state=safeSnapshot;
@@ -3703,9 +3747,12 @@
     }
 
     function renderNodeStates(){
+      const showAll=selectedCountry==="ALL";
+      signalsLayer?.classList.toggle("is-all-countries",showAll);
+
       signalNodes.forEach(node=>{
         const code=normalizeCountryCode(node.dataset.country);
-        const selected=code===selectedCountry;
+        const selected=!showAll && code===selectedCountry;
         const hasSignal=countryCount(code)>0;
 
         node.classList.toggle("is-selected",selected);
