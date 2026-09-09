@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&amp;family=Rajdhani:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Orbitron:wght@400;500;600;700;800&amp;family=Rajdhani:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
     /* =========================================================
        MIKU WORLD / PAGE 2 - THE WORLD
@@ -2020,6 +2020,401 @@
       .signal-label { display: none; }
     }
 
+
+
+    /* =========================================================
+       EDITORIAL HIERARCHY PASS / NO TEMPLATE
+       - Large / small type contrast instead of uniform sizing
+       - Deliberate asymmetry and negative space
+       - Web-sourced NASA/NOAA Earth-at-Night image as atmosphere
+       ========================================================= */
+    :root {
+      --editorial-sans: "Space Grotesk", "Noto Sans JP", Arial, sans-serif;
+      --nasa-night: url("https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/3/324350main_11_full-1.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1410&w=1880");
+    }
+
+    body {
+      font-family: var(--editorial-sans);
+      background: #01050b;
+    }
+
+    .world-stage {
+      position: relative;
+      isolation: isolate;
+      grid-template-columns: minmax(0,1fr) 318px;
+      gap: 52px 34px;
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 64px;
+      background:
+        radial-gradient(ellipse at 29% 42%, rgba(18,119,179,.18), transparent 48%),
+        linear-gradient(180deg, rgba(0,8,19,.36), #000713 72%, #00040e 100%);
+    }
+
+    .world-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background-image:
+        linear-gradient(90deg, rgba(0,6,16,.98) 0%, rgba(0,6,16,.76) 28%, rgba(0,6,16,.48) 58%, rgba(0,6,16,.94) 100%),
+        linear-gradient(180deg, rgba(0,6,16,.72) 0%, rgba(0,6,16,.12) 34%, rgba(0,6,16,.82) 76%, #00040e 100%),
+        var(--nasa-night);
+      background-size: cover;
+      background-position: center 24%;
+      opacity: .38;
+      filter: saturate(.72) hue-rotate(145deg) contrast(1.08);
+      mask-image: linear-gradient(180deg, #000 0 66%, transparent 96%);
+    }
+
+    .world-stage::before {
+      content: "02";
+      display: block;
+      position: absolute;
+      right: clamp(30px,5vw,82px);
+      top: calc(var(--header-h) + 12px);
+      z-index: -1;
+      color: rgba(185,255,252,.055);
+      font-family: var(--display);
+      font-size: clamp(130px,19vw,300px);
+      font-weight: 800;
+      line-height: .8;
+      letter-spacing: -.08em;
+      pointer-events: none;
+    }
+
+    .world-intro {
+      grid-template-columns: minmax(360px,.9fr) minmax(320px,1.1fr);
+      gap: 34px clamp(48px,7vw,118px);
+      min-height: 270px;
+      align-items: end;
+      padding-right: clamp(0px,3vw,50px);
+    }
+
+    .eyebrow {
+      align-self: start;
+      margin: 0 0 2px;
+      color: rgba(204,255,254,.7);
+      font: 600 9px var(--editorial-sans);
+      letter-spacing: .34em;
+    }
+    .eyebrow::before { width: 64px; opacity: .5; }
+
+    .world-title {
+      grid-row: span 2;
+      align-self: end;
+      margin: 0;
+      font-size: clamp(64px,7.3vw,118px);
+      line-height: .78;
+      letter-spacing: -.045em;
+      text-shadow: 0 10px 34px rgba(0,0,0,.48), 0 0 28px rgba(79,255,247,.12);
+    }
+    .world-title span:first-child {
+      margin: 0 0 .38em .08em;
+      color: rgba(247,255,255,.66);
+      font-size: .19em;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: .52em;
+    }
+    .world-title .accent {
+      margin-left: -.05em;
+      color: #56fff7;
+      font-size: 1.03em;
+      line-height: .8;
+      letter-spacing: -.055em;
+    }
+    .world-title span:last-child {
+      margin: 1.38em 0 0 .08em;
+      color: #f7ffff;
+      font-size: .20em;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: .34em;
+    }
+
+    .world-intro-copy {
+      align-self: end;
+      max-width: 520px;
+      margin: 0 0 5px;
+      color: rgba(225,238,248,.72);
+      font: 400 clamp(13px,1.05vw,15px)/1.95 var(--editorial-sans);
+      letter-spacing: .015em;
+      text-shadow: 0 2px 14px rgba(0,0,0,.85);
+    }
+    .world-intro-copy strong {
+      display: block;
+      margin: 18px 0 16px;
+      max-width: 500px;
+      color: #f7ffff;
+      font-size: clamp(19px,1.65vw,26px);
+      font-weight: 500;
+      line-height: 1.42;
+      letter-spacing: -.025em;
+    }
+
+    .demo-note {
+      justify-self: start;
+      align-self: start;
+      margin-top: 10px;
+      padding: 6px 0 6px 12px;
+      border: 0;
+      border-left: 1px solid rgba(79,255,247,.48);
+      border-radius: 0;
+      background: transparent;
+      color: rgba(187,212,231,.58);
+      font: 500 8px/1.65 var(--editorial-sans);
+      letter-spacing: .12em;
+    }
+
+    .orb-zone { align-self: start; }
+    .earth-orb, .earth-orb.is-pulsing {
+      background: rgba(7,34,61,.7);
+      box-shadow:
+        0 0 0 1px rgba(79,255,247,.18),
+        0 28px 100px rgba(0,0,0,.42),
+        0 0 60px rgba(0,163,216,.08);
+    }
+    .world-map-image { filter: saturate(.88) contrast(1.06) brightness(.92); }
+
+    .map-controls {
+      margin-top: 22px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(110,231,245,.12);
+      font-size: 9px;
+      letter-spacing: .22em;
+    }
+
+    .signal-panel {
+      align-self: start;
+      margin-top: 46px;
+      width: 100%;
+      padding: 26px 24px 30px;
+      background:
+        linear-gradient(180deg, rgba(3,14,35,.88), rgba(2,8,22,.95));
+      border-color: rgba(94,235,243,.22);
+      box-shadow: 0 32px 90px rgba(0,0,0,.48);
+    }
+    .panel-topline {
+      margin-bottom: 28px;
+      font-size: 8px;
+      letter-spacing: .18em;
+    }
+    .panel-city-code { font-size: 9px; letter-spacing: .22em; }
+    .panel-city {
+      margin-top: 9px;
+      font-size: clamp(30px,2.7vw,46px);
+      line-height: .95;
+      letter-spacing: -.035em;
+    }
+    .panel-status { margin-top: 20px; font-size: 10px; line-height: 1.85; }
+    .panel-rule { margin: 28px 0 22px; opacity: .62; }
+
+    .panel-metrics {
+      grid-template-columns: .82fr 1.18fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .metric {
+      min-height: 88px;
+      padding: 12px 11px;
+      background: rgba(8,42,71,.16);
+      border-color: rgba(79,255,247,.11);
+    }
+    .metric-label { font-size: 7px; line-height: 1.4; letter-spacing: .11em; }
+    .metric-value {
+      margin-top: 8px;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .metric:nth-child(2) .metric-value {
+      margin-top: 5px;
+      font-size: 38px;
+      color: #f3ffff;
+      text-shadow: 0 0 20px rgba(79,255,247,.28);
+    }
+
+    .signal-feed { margin-top: 28px; }
+    .signal-feed-title { margin-bottom: 14px; font-size: 7px; letter-spacing: .2em; }
+    .signal-event {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      color: rgba(228,240,250,.72);
+      font-size: 9px;
+      line-height: 1.6;
+    }
+    .signal-event em { font-size: 7px; letter-spacing: .16em; }
+
+    .bottom-hud {
+      bottom: 22px;
+      opacity: .76;
+    }
+    .hud-copy { font-size: 7px; letter-spacing: .14em; }
+
+    .visual-source-credit {
+      position: absolute;
+      left: clamp(24px,5vw,78px);
+      bottom: 19px;
+      z-index: 28;
+      color: rgba(184,209,226,.30);
+      font: 500 7px var(--editorial-sans);
+      letter-spacing: .16em;
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+    .visual-source-credit:hover,
+    .visual-source-credit:focus-visible { color: rgba(204,255,254,.72); }
+
+    .world-story {
+      position: relative;
+      overflow: hidden;
+      padding-top: 150px;
+      padding-bottom: 130px;
+      background:
+        radial-gradient(ellipse at 78% 14%, rgba(16,78,120,.16), transparent 34%),
+        linear-gradient(180deg, #00040e, #010914 60%, #00040e 100%);
+    }
+    .world-story::before {
+      content: "001";
+      position: absolute;
+      left: clamp(22px,4vw,64px);
+      top: 78px;
+      color: rgba(79,255,247,.045);
+      font-family: var(--display);
+      font-size: clamp(120px,20vw,320px);
+      font-weight: 800;
+      letter-spacing: -.08em;
+      line-height: .8;
+      pointer-events: none;
+    }
+    .story-grid {
+      position: relative;
+      grid-template-columns: minmax(280px,.72fr) minmax(360px,1.28fr);
+      gap: clamp(70px,10vw,170px);
+      align-items: start;
+    }
+    .story-number { font-size: 8px; letter-spacing: .28em; }
+    .story-title {
+      margin-top: 26px;
+      font-size: clamp(52px,6.8vw,94px);
+      line-height: .84;
+      letter-spacing: -.045em;
+    }
+    .story-title .outline {
+      margin-top: .45em;
+      color: rgba(79,255,247,.62);
+      font-size: .46em;
+      line-height: 1.15;
+      letter-spacing: .08em;
+    }
+    .story-copy {
+      max-width: 660px;
+      padding-top: 70px;
+      color: rgba(218,232,243,.72);
+      font-size: clamp(14px,1.2vw,17px);
+      line-height: 2.15;
+    }
+    .story-copy strong {
+      display: block;
+      margin: 30px 0 0;
+      color: #f7ffff;
+      font-size: clamp(18px,1.5vw,23px);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .story-steps {
+      grid-template-columns: 1.08fr .82fr 1.22fr;
+      gap: 18px;
+      margin-top: 150px;
+      background: transparent;
+      border: 0;
+      align-items: start;
+    }
+    .story-step {
+      min-height: 260px;
+      padding: 34px 30px;
+      border: 1px solid rgba(79,255,247,.09);
+      background: linear-gradient(180deg, rgba(5,18,33,.78), rgba(2,9,18,.92));
+    }
+    .story-step:nth-child(2) {
+      min-height: 210px;
+      margin-top: 58px;
+      padding: 26px 24px;
+      opacity: .82;
+    }
+    .story-step:nth-child(3) {
+      min-height: 300px;
+      margin-top: 18px;
+      padding: 42px 34px;
+      border-color: rgba(79,255,247,.18);
+    }
+    .story-step-index { font-size: 8px; letter-spacing: .22em; }
+    .story-step h3 {
+      margin-top: 32px;
+      font-size: clamp(22px,2vw,31px);
+      line-height: 1.08;
+      letter-spacing: -.015em;
+    }
+    .story-step:nth-child(2) h3 { font-size: clamp(17px,1.5vw,23px); }
+    .story-step:nth-child(3) h3 { font-size: clamp(26px,2.4vw,36px); }
+    .story-step p { margin-top: 18px; font-size: 11px; line-height: 1.95; }
+
+    .next-page {
+      margin-top: 140px;
+      padding-top: 34px;
+    }
+    .next-page small { font-size: 7px; letter-spacing: .24em; }
+    .next-page strong {
+      margin-top: 10px;
+      font-size: clamp(28px,3.7vw,58px);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+
+    @media (max-width: 1080px) {
+      .world-stage { grid-template-columns: minmax(0,1fr) 280px; gap: 34px 24px; }
+      .world-intro { grid-template-columns: minmax(300px,.9fr) minmax(280px,1.1fr); gap: 28px 44px; }
+      .world-title { font-size: clamp(58px,7vw,92px); }
+      .signal-panel { margin-top: 24px; padding: 22px 18px 25px; }
+      .story-grid { gap: 70px; }
+    }
+
+    @media (max-width: 860px) {
+      .world-stage { display: flex; padding-top: calc(var(--header-h) + 46px); }
+      .world-stage::before { right: 18px; top: calc(var(--header-h) + 18px); }
+      .world-stage::after { opacity: .28; }
+      .world-intro { display: block; min-height: 0; padding: 0 24px; }
+      .eyebrow { margin-bottom: 28px; }
+      .world-title { font-size: clamp(62px,13vw,104px); }
+      .world-title span:last-child { margin-top: 1.1em; }
+      .world-intro-copy { margin-top: 44px; max-width: 620px; }
+      .demo-note { margin-top: 24px; }
+      .signal-panel { margin-top: 18px; }
+      .visual-source-credit { position: relative; left: auto; bottom: auto; margin: 24px 24px 0; align-self: flex-start; }
+      .story-grid { grid-template-columns: 1fr; gap: 38px; }
+      .story-copy { padding-top: 0; }
+      .story-steps { grid-template-columns: 1fr; gap: 14px; margin-top: 90px; }
+      .story-step,
+      .story-step:nth-child(2),
+      .story-step:nth-child(3) { min-height: 0; margin-top: 0; padding: 28px 24px; opacity: 1; }
+    }
+
+    @media (max-width: 560px) {
+      .world-stage { padding-left: 18px; padding-right: 18px; }
+      .world-intro { padding: 0 4px; }
+      .eyebrow { font-size: 7px; letter-spacing: .22em; }
+      .world-title { font-size: clamp(54px,16vw,78px); }
+      .world-intro-copy { margin-top: 34px; font-size: 12px; }
+      .world-intro-copy strong { font-size: 18px; }
+      .signal-panel { margin-left: 0; margin-right: 0; }
+      .panel-metrics { grid-template-columns: 1fr 1fr; }
+      .story-title { font-size: clamp(42px,12vw,66px); }
+      .world-story { padding-left: 22px; padding-right: 22px; }
+      .next-page strong { font-size: 28px; }
+    }
+
   </style>
 </head>
 
@@ -2065,16 +2460,17 @@
   <main>
     <section class="world-stage" aria-labelledby="worldTitle">
       <div class="world-intro">
-        <p class="eyebrow">PAGE 02 / MIKU WORLD OBSERVER</p>
+        <p class="eyebrow">OBSERVATION LAYER / PAGE 02</p>
         <h1 class="world-title" id="worldTitle">
           <span>THE</span>
           <span class="accent">WORLD</span>
           <span>IS SINGING.</span>
         </h1>
         <p class="world-intro-copy">
-          これは「初音ミクについて読むページ」ではありません。<br>
-          <strong>公開されたミク文化の動きを観測し、国単位またはGLOBAL SIGNALとして感じる場所。</strong><br>
-          MIKU WORLD自身が世界を観測します。登録・投稿・GPSは使いません。
+          これは「初音ミクについて読むページ」ではありません。
+          <strong>世界で生まれた、検証済みのミク文化だけを観測する。</strong>
+          国が確認できればCOUNTRY SIGNAL。確認できなければGLOBAL SIGNAL。<br>
+          登録・投稿・GPSは使いません。
         </p>
         <div class="demo-note" id="connectionNote" data-mode="CONNECTING">検証済み公開SIGNALのみを表示。WORLD PULSEは直近60分のSIGNAL件数です。</div>
       </div>
@@ -2178,6 +2574,9 @@
           COUNTRY OR GLOBAL ONLY
         </div>
       </div>
+      <a class="visual-source-credit" href="https://science.nasa.gov/resource/earth-at-night/" target="_blank" rel="noopener noreferrer" aria-label="背景ビジュアル参照元 NASA Earth at Night">
+        VISUAL SOURCE / EARTH AT NIGHT · NASA / NOAA
+      </a>
     </section>
 
     <section class="world-story" aria-labelledby="storyTitle">
