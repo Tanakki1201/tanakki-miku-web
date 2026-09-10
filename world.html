@@ -3349,6 +3349,42 @@
     }
   </style>
 
+
+  <style id="cyan-selected-signal-final">
+    /* Selected country uses cyan only — no pink/red highlight. */
+    .signal-node.is-selected::before {
+      width: 6px !important;
+      height: 6px !important;
+      transform: translate(-50%, -50%) !important;
+      background: var(--cyan) !important;
+      box-shadow:
+        0 0 6px #fff,
+        0 0 12px var(--cyan),
+        0 0 20px rgba(79, 255, 247, 0.70) !important;
+      opacity: 1 !important;
+    }
+
+    .signal-node.is-selected::after {
+      width: 16px !important;
+      height: 16px !important;
+      border-color: rgba(79, 255, 247, 0.68) !important;
+      opacity: 0;
+      animation: nodePulse 2.4s ease-out infinite !important;
+    }
+
+    /* When the selected country has no SIGNAL, keep it quiet instead of fabricating activity. */
+    .signal-node.is-selected:not(.has-signal)::before {
+      background: rgba(79, 255, 247, 0.28) !important;
+      box-shadow: 0 0 6px rgba(79, 255, 247, 0.18) !important;
+      opacity: 0.42 !important;
+    }
+
+    .signal-node.is-selected:not(.has-signal)::after {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -3442,6 +3478,7 @@
         <div class="map-controls">
           <label for="countryPicker">COUNTRY SIGNAL</label>
           <select class="map-country-select" id="countryPicker" aria-label="国別シグナルを選択">
+            <option value="ALL">ALL COUNTRIES</option>
             <option value="JP">JAPAN / JP</option>
             <option value="CN">CHINA / CN</option>
             <option value="ID">INDONESIA / ID</option>
@@ -3453,7 +3490,6 @@
             <option value="AU">AUSTRALIA / AU</option>
             <option value="KR">SOUTH KOREA / KR</option>
             <option value="GLOBAL">UNKNOWN</option>
-            <option value="ALL">ALL COUNTRIES</option>
           </select>
         </div>
       </div>
@@ -3587,7 +3623,7 @@
     const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let state=safeSnapshot;
-    let selectedCountry="JP";
+    let selectedCountry="ALL";
     let selectedHour="ALL";
     let knownSignalIds=new Set();
 
