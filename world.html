@@ -2276,7 +2276,7 @@
         linear-gradient(180deg, #00040e, #010914 60%, #00040e 100%);
     }
     .world-story::before {
-      content: "001";
+      content: "01";
       position: absolute;
       left: clamp(22px,4vw,64px);
       top: 78px;
@@ -3385,6 +3385,13 @@
     }
   </style>
 
+
+  <style id="panel-marked-text-cleanup">
+    .signal-panel .panel-topline {
+      display: none !important;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -3478,18 +3485,18 @@
         <div class="map-controls">
           <label for="countryPicker">COUNTRY SIGNAL</label>
           <select class="map-country-select" id="countryPicker" aria-label="国別シグナルを選択">
-            <option value="ALL">ALL COUNTRIES</option>
-            <option value="JP">JAPAN / JP</option>
-            <option value="CN">CHINA / CN</option>
-            <option value="ID">INDONESIA / ID</option>
-            <option value="US">UNITED STATES / US</option>
-            <option value="MX">MEXICO / MX</option>
-            <option value="GB">UNITED KINGDOM / GB</option>
-            <option value="FR">FRANCE / FR</option>
-            <option value="DE">GERMANY / DE</option>
-            <option value="AU">AUSTRALIA / AU</option>
-            <option value="KR">SOUTH KOREA / KR</option>
-            <option value="GLOBAL">UNKNOWN</option>
+            <option value="ALL">All countries</option>
+            <option value="JP">Japan / JP</option>
+            <option value="CN">China / CN</option>
+            <option value="ID">Indonesia / ID</option>
+            <option value="US">United states / US</option>
+            <option value="MX">Mexico / MX</option>
+            <option value="GB">United kingdom / GB</option>
+            <option value="FR">France / FR</option>
+            <option value="DE">Germany / DE</option>
+            <option value="AU">Australia / AU</option>
+            <option value="KR">South korea / KR</option>
+            <option value="GLOBAL">Unknown</option>
           </select>
         </div>
       </div>
@@ -3500,7 +3507,7 @@
           <span class="panel-live" id="observerMode"><span class="live-dot" aria-hidden="true"></span> CONNECTING...</span>
         </div>
 
-        <p class="panel-city-code" id="panelCityCode">COUNTRY SIGNAL / JP</p>
+        <p class="panel-city-code" id="panelCityCode">COUNTRY SIGNAL</p>
         <h2 class="panel-city" id="panelCity">JAPAN</h2>
 
         <div class="panel-rule" aria-hidden="true"></div>
@@ -3659,7 +3666,11 @@
 
       const option=document.createElement("option");
       option.value=normalized;
-      option.textContent=`${countryName(normalized)} / ${normalized}`;
+      const pickerCountryName=countryName(normalized);
+      const pickerLabel=pickerCountryName
+        ? pickerCountryName.charAt(0).toUpperCase()+pickerCountryName.slice(1).toLowerCase()
+        : normalized;
+      option.textContent=`${pickerLabel} / ${normalized}`;
 
       const globalOption=[...countryPicker.options].find(item=>item.value==="GLOBAL");
       countryPicker.insertBefore(option,globalOption||null);
@@ -3852,9 +3863,7 @@
       panelCityCode.textContent=
         selectedCountry==="ALL"
           ? "ALL COUNTRIES"
-          : selectedCountry==="GLOBAL"
-            ? "COUNTRY SIGNAL / UNKNOWN"
-            : `COUNTRY SIGNAL / ${selectedCountry}`;
+          : "COUNTRY SIGNAL";
 
       panelCity.textContent=name;
 
